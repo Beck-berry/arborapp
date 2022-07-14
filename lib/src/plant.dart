@@ -6,19 +6,15 @@ class Plant extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(
+          title: const Text(
+            'Növény neve',
+          ),
+        ),
         body: Container(
             margin: const EdgeInsets.all(10.0),
             child: Column(
                 children: [
-                  const Text(
-                    'Növény neve',
-                    style: TextStyle(
-                        fontStyle: FontStyle.italic,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 50,
-                        color: Colors.green
-                    ),
-                  ),
                   IntrinsicHeight(
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.stretch,

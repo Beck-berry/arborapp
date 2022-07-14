@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'src/plant.dart';
+import 'src/map.dart';
+import 'src/search.dart';
+import 'src/profile.dart';
 
 void main() {
   runApp(const Arborapp());
@@ -50,22 +52,22 @@ class MyHomePage extends StatelessWidget {
             const FoMenuButton(
               cimke: "Barangolás a térképen",
               ikon: Icons.map,
-              onPress: Plant(),
+              onPress: Map(),
             ),
             const FoMenuButton(
               cimke: "Növény keresése",
               ikon: Icons.search,
-              onPress: Plant(),
+              onPress: Search(),
             ),
             const FoMenuButton(
               cimke: "Saját jegyzeteim",
               ikon: Icons.edit,
-              onPress: Plant(),
+              onPress: Search(),
             ),
             const FoMenuButton(
               cimke: "Profil beállítások",
               ikon: Icons.face,
-              onPress: Plant(),
+              onPress: Profile(),
             ),
           ]
         )

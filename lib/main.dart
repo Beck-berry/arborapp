@@ -1,5 +1,10 @@
+import 'package:arborapp/src/enums.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import 'firebase_options.dart';
 import 'src/map.dart';
 import 'src/search.dart';
 import 'src/profile.dart';
@@ -13,12 +18,15 @@ class Arborapp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Arborapp',
-      theme: ThemeData(
-        primarySwatch: Colors.green,
-      ),
-      home: const MyHomePage(cim: 'Arborapp'),
+    return ChangeNotifierProvider(
+      create: (context) => ApplicationState(), // ← create/init your state model
+      child: MaterialApp(
+        title: 'Arborapp',
+        theme: ThemeData(
+          primarySwatch: Colors.green,
+        ),
+        home: const MyHomePage(cim: 'Arborapp'),
+      )
     );
   }
 }
@@ -64,10 +72,21 @@ class MyHomePage extends StatelessWidget {
               ikon: Icons.edit,
               onPress: Search(),
             ),
-            const FoMenuButton(
+            FoMenuButton(
               cimke: "Profil beállítások",
               ikon: Icons.face,
-              onPress: Profile(),
+              onPress: Consumer<ApplicationState>(
+                builder: (context, appState, _) => Profile(
+                  loginState: appState.loginState,
+                  startLogin: appState.startLogin,
+                  startRegister: appState.startRegister,
+                  verifyEmail: appState.verifyEmail,
+                  signIn: appState.signIn,
+                  megszakit: appState.megszakit,
+                  register: appState.register,
+                  signOut: appState.signOut
+                )
+              ),
             ),
           ]
         )
@@ -102,4 +121,92 @@ class FoMenuButton extends StatelessWidget {
         ),
     );
   }
+}
+
+class ApplicationState extends ChangeNotifier {
+  LoginState _loginState = LoginState.loggedOut;
+  LoginState get loginState => _loginState;
+
+  ApplicationState() {
+    init();
+  }
+
+  Future<void> init() async {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+
+    FirebaseAuth.instance.userChanges().listen((user) {
+      if (user != null) {
+        _loginState = LoginState.loggedIn;
+      } else {
+        _loginState = LoginState.loggedOut;
+      }
+      notifyListeners();
+    });
+  }
+
+  void startLogin() {
+    _loginState = LoginState.login;
+    notifyListeners();
+  }
+
+  void startRegister() {
+    _loginState = LoginState.register;
+    notifyListeners();
+  }
+
+  void megszakit() {
+    _loginState = LoginState.loggedOut;
+    notifyListeners();
+  }
+
+  Future<bool> verifyEmail(String email,
+      void Function(FirebaseAuthException e) errorCallback,
+  ) async {
+    try {
+      var methods = await FirebaseAuth.instance.fetchSignInMethodsForEmail(email);
+      return methods.contains('password');
+    } on FirebaseAuthException catch (e) {
+      errorCallback(e);
+      return false;
+    }
+  }
+
+  Future<void> signIn(
+      String email,
+      String password,
+      void Function(FirebaseAuthException e) errorCallback,
+  ) async {
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+    } on FirebaseAuthException catch (e) {
+      errorCallback(e);
+    }
+  }
+
+  Future<void> register(
+      String email,
+      String nickname,
+      String password,
+      void Function(FirebaseAuthException e) errorCallback
+  ) async {
+    try {
+      var credential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+      await credential.user!.updateDisplayName(nickname);
+    } on FirebaseAuthException catch (e) {
+      errorCallback(e);
+    }
+  }
+
+  void signOut() {
+    FirebaseAuth.instance.signOut();
+    _loginState = LoginState.loggedOut;
+    notifyListeners();
+  }
+
 }

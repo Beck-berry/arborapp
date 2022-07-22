@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'enums.dart';
 
@@ -12,6 +13,7 @@ class Profile extends StatelessWidget {
     required this.megszakit,
     required this.register,
     required this.signOut,
+    required this.resetPassword,
     super.key
   });
 
@@ -35,6 +37,10 @@ class Profile extends StatelessWidget {
       void Function(Exception e) error,
       ) register;
   final void Function() signOut;
+  final void Function(
+      String email,
+      void Function(Exception e) error,
+      ) resetPassword;
 
   Scaffold base(List<Widget> children) {
     return Scaffold(
@@ -283,8 +289,30 @@ class Profile extends StatelessWidget {
           ),
         ]);
       case LoginState.loggedIn:
+        User? _user = FirebaseAuth.instance.currentUser;
+
         return base([
-          const Text("Be vagyok lépve!"),
+          Column(
+            children: [
+              Row(
+                children: [
+                  const Text("A felhasználóneved:"),
+                  Text(_user!.displayName.toString())
+                ],
+              ),
+              Row(
+                children: [
+                  const Text("Az e-mail címed:"),
+                  Text(_user.email.toString())
+                ],
+              ),
+              ElevatedButton.icon(
+                  onPressed: () {}, // TODO form
+                  icon: const Icon(Icons.edit, size: 20),
+                  label: const Text("Jelszó megváltoztatása")
+              )
+            ]
+          ),
           ElevatedButton.icon(
               onPressed: signOut,
               icon: const Icon(Icons.logout, size: 20),

@@ -1,4 +1,8 @@
+import 'dart:async';
+
 import 'package:arborapp/src/enums.dart';
+import 'package:arborapp/src/plant.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -94,7 +98,8 @@ class MyHomePage extends StatelessWidget {
                   signIn: appState.signIn,
                   megszakit: appState.megszakit,
                   register: appState.register,
-                  signOut: appState.signOut
+                  signOut: appState.signOut,
+                  resetPassword: appState.resetPassword
                 )
               ),
             ),
@@ -247,6 +252,17 @@ class ApplicationState extends ChangeNotifier {
     FirebaseAuth.instance.signOut();
     _loginState = LoginState.loggedOut;
     notifyListeners();
+  }
+
+  Future<void> resetPassword(
+      String email,
+      void Function(FirebaseAuthException e) errorCallback
+  ) async {
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+    } on FirebaseAuthException catch (e) {
+      errorCallback(e);
+    }
   }
 
 }

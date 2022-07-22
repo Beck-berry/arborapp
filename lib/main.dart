@@ -62,15 +62,25 @@ class MyHomePage extends StatelessWidget {
               ikon: Icons.map,
               onPress: Map(),
             ),
-            const FoMenuButton(
+            FoMenuButton(
               cimke: "Növény keresése",
               ikon: Icons.search,
-              onPress: Search(),
+              onPress: Consumer<ApplicationState>(
+                builder: (context, appState, _) => Search(
+                    novenyek: appState.novenyek,
+                    novenyekSzama: appState.novenyekSzama
+                ),
+              ),
             ),
-            const FoMenuButton(
+            FoMenuButton(
               cimke: "Saját jegyzeteim",
               ikon: Icons.edit,
-              onPress: Search(),
+              onPress: Consumer<ApplicationState>(
+                builder: (context, appState, _) => Search(
+                    novenyek: appState.novenyek,
+                    novenyekSzama: appState.novenyekSzama
+                ),
+              ),
             ),
             FoMenuButton(
               cimke: "Profil beállítások",
@@ -127,6 +137,13 @@ class ApplicationState extends ChangeNotifier {
   LoginState _loginState = LoginState.loggedOut;
   LoginState get loginState => _loginState;
 
+  StreamSubscription<QuerySnapshot>? _novenyekSnapshot;
+  List<NovenyAdat> _novenyek = [];
+  List<NovenyAdat> get novenyek => _novenyek;
+
+  int _novenyekSzama = 0;
+  int get novenyekSzama => _novenyekSzama;
+
   ApplicationState() {
     init();
   }
@@ -139,8 +156,31 @@ class ApplicationState extends ChangeNotifier {
     FirebaseAuth.instance.userChanges().listen((user) {
       if (user != null) {
         _loginState = LoginState.loggedIn;
+        _novenyekSnapshot = FirebaseFirestore.instance
+            .collection('novenyek')
+            .orderBy('nev', descending: true)
+            //.limit(50)
+            .snapshots()
+            .listen((snapshot) {
+              _novenyek = [];
+              _novenyekSzama = snapshot.docs.length;
+              for (final document in snapshot.docs) {
+                _novenyek.add(
+                  NovenyAdat(
+                    nev: document.data()['nev'] as String,
+                    leiras: document.data()['leiras'] as String,
+                    meret: {},
+                    igenyek: {},//document.data()['kornyezeti_igenyek'] as Map<String, List>,
+                    diszitoertek: {}, //document.data()['diszitoertek'] as Map<String, String>,
+                    alkalmazas: document.data()['alkalmazas'] as String
+                  ),
+                );
+              }
+            });
       } else {
         _loginState = LoginState.loggedOut;
+        _novenyek = [];
+        _novenyekSnapshot?.cancel();
       }
       notifyListeners();
     });

@@ -142,7 +142,6 @@ class ApplicationState extends ChangeNotifier {
   LoginState _loginState = LoginState.loggedOut;
   LoginState get loginState => _loginState;
 
-  StreamSubscription<QuerySnapshot>? _novenyekSnapshot;
   List<NovenyAdat> _novenyek = [];
   List<NovenyAdat> get novenyek => _novenyek;
 
@@ -158,34 +157,33 @@ class ApplicationState extends ChangeNotifier {
       options: DefaultFirebaseOptions.currentPlatform,
     );
 
+    FirebaseFirestore.instance
+        .collection('novenyek')
+        .orderBy('nev', descending: true)
+      //.limit(50)
+        .snapshots()
+        .listen((snapshot) {
+      _novenyek = [];
+      _novenyekSzama = snapshot.docs.length;
+      for (final document in snapshot.docs) {
+        _novenyek.add(
+          NovenyAdat(
+              nev: document.data()['nev'] as String,
+              leiras: document.data()['leiras'] as String,
+              meret: document.data()['meret'],
+              igenyek: document.data()['kornyezeti_igenyek'],
+              diszitoertek: document.data()['diszitoertek'],
+              alkalmazas: document.data()['alkalmazas'] as String
+          ),
+        );
+      }
+    });
+
     FirebaseAuth.instance.userChanges().listen((user) {
       if (user != null) {
         _loginState = LoginState.loggedIn;
-        _novenyekSnapshot = FirebaseFirestore.instance
-            .collection('novenyek')
-            .orderBy('nev', descending: true)
-            //.limit(50)
-            .snapshots()
-            .listen((snapshot) {
-              _novenyek = [];
-              _novenyekSzama = snapshot.docs.length;
-              for (final document in snapshot.docs) {
-                _novenyek.add(
-                  NovenyAdat(
-                    nev: document.data()['nev'] as String,
-                    leiras: document.data()['leiras'] as String,
-                    meret: {},
-                    igenyek: {},//document.data()['kornyezeti_igenyek'] as Map<String, List>,
-                    diszitoertek: {}, //document.data()['diszitoertek'] as Map<String, String>,
-                    alkalmazas: document.data()['alkalmazas'] as String
-                  ),
-                );
-              }
-            });
       } else {
         _loginState = LoginState.loggedOut;
-        _novenyek = [];
-        _novenyekSnapshot?.cancel();
       }
       notifyListeners();
     });

@@ -120,20 +120,32 @@ class AdatTabla extends StatelessWidget {
         TableRow(
             children: [
               TableCell(
-                  child: Meret(meret: noveny.meret)
+                  child: Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: Meret(meret: noveny.meret)
+                  )
               ),
               TableCell(
-                  child: KornyezetiIgenyek(igenyek: noveny.igenyek)
+                  child: Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: KornyezetiIgenyek(igenyek: noveny.igenyek)
+                  )
               ),
             ]
         ),
         TableRow(
             children: [
               TableCell(
-                  child: Diszitoertek(diszitoertek: noveny.diszitoertek)
+                  child: Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: Diszitoertek(diszitoertek: noveny.diszitoertek)
+                  )
               ),
               TableCell(
-                  child: Alkalmazas(alkalmazas: noveny.alkalmazas)
+                  child: Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: Alkalmazas(alkalmazas: noveny.alkalmazas)
+                  )
               )
             ]
         ),
@@ -164,20 +176,53 @@ class Meret extends StatelessWidget {
         Row(
           children: [
             Image.asset(
-                'assets/images/tree.jpg',
-                height: 40
+                'assets/images/fa.png',
+                height: 30
             ),
-            Text(meret['magassag']),
-            Image.asset(
-                'assets/images/tree.jpg',
-                height: 40
+            RotatedBox(
+              quarterTurns: 1,
+              child: Image.asset(
+                  'assets/images/nyil.png',
+                  height: 10
+              ),
             ),
-            Text(meret['szelesseg']),
-            Image.asset(
-                'assets/images/tree.jpg',
-                height: 40
+            Text(
+              "${meret['magassag']}m",
+              style: const TextStyle(
+                fontSize: 10,
+              ),
             ),
-            Text(meret['ido'])
+            Column(
+              children: [
+                Image.asset(
+                    'assets/images/fa.png',
+                    height: 30
+                ),
+                Image.asset(
+                    'assets/images/nyil.png',
+                    height: 10
+                ),
+              ]
+            ),
+            Text(
+              "${meret['szelesseg']}m",
+              style: const TextStyle(
+                fontSize: 10,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Image.asset(
+                  'assets/images/ido.png',
+                  height: 25
+              ),
+            ),
+            Text(
+              "${meret['ido']} év",
+              style: const TextStyle(
+                fontSize: 10,
+              ),
+            )
           ],
         )
       ],
@@ -206,10 +251,18 @@ class KornyezetiIgenyek extends StatelessWidget {
         ),
         Row(
           children: [
-            Text(igenyek['fenyigeny'],
-                style: const TextStyle(
-                fontSize: 10
-            ))
+            if (igenyek['fenyigeny'].toString().contains("napos")) ...[
+              Image.asset(
+                  "assets/images/napos.png",
+                  height: 35
+              )
+            ],
+            if (igenyek['fenyigeny'].toString().contains("félárnyékos")) ...[
+              Image.asset(
+                  "assets/images/felarnyekos.png",
+                  height: 35
+              )
+            ],
           ],
         ),
         Row(
@@ -244,12 +297,124 @@ class Diszitoertek extends StatelessWidget {
               fontWeight: FontWeight.bold,
             )
         ),
-        Row(
+        Column(
           children: [
-            Text(diszitoertek['tavasz']),
-            Text(diszitoertek['nyar']),
-            Text(diszitoertek['osz']),
-            Text(diszitoertek['tel'])
+            Row(
+              children: [
+                const Text(
+                    "Tavasz:",
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                    )
+                ),
+                if (diszitoertek['tavasz'].toString().contains("virág")) ...[
+                  Image.asset(
+                      "assets/images/virag.png",
+                      height: 15
+                  )
+                ],
+                if (diszitoertek['tavasz'].toString().contains("lomb")) ...[
+                  Image.asset(
+                      "assets/images/level.png",
+                      height: 15
+                  )
+                ],
+                if (diszitoertek['tavasz'].toString().contains("termés")) ...[
+                  Image.asset(
+                      "assets/images/termes.png",
+                      height: 15
+                  )
+                ],
+              ],
+            ),
+            Row(
+              children: [
+                const Text(
+                    "Nyár:",
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                    )
+                ),
+                if (diszitoertek['nyar'].toString().contains("virág")) ...[
+                  Image.asset(
+                      "assets/images/virag.png",
+                      height: 15
+                  )
+                ],
+                if (diszitoertek['nyar'].toString().contains("lomb")) ...[
+                  Image.asset(
+                      "assets/images/level.png",
+                      height: 15
+                  )
+                ],
+                if (diszitoertek['nyar'].toString().contains("termés")) ...[
+                  Image.asset(
+                      "assets/images/termes.png",
+                      height: 15
+                  )
+                ],
+              ],
+            ),
+            Row(
+              children: [
+                const Text(
+                    "Ősz:",
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                    )
+                ),
+                if (diszitoertek['osz'].toString().contains("virág")) ...[
+                  Image.asset(
+                      "assets/images/virag.png",
+                      height: 15
+                  )
+                ],
+                if (diszitoertek['osz'].toString().contains("lomb")) ...[
+                  Image.asset(
+                      "assets/images/level.png",
+                      height: 15
+                  )
+                ],
+                if (diszitoertek['osz'].toString().contains("termés")) ...[
+                  Image.asset(
+                      "assets/images/termes.png",
+                      height: 15
+                  )
+                ],
+              ],
+            ),
+            Row(
+              children: [
+                const Text(
+                    "Tél:",
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                    )
+                ),
+                if (diszitoertek['tel'].toString().contains("virág")) ...[
+                  Image.asset(
+                      "assets/images/virag.png",
+                      height: 15
+                  )
+                ],
+                if (diszitoertek['tel'].toString().contains("lomb")) ...[
+                  Image.asset(
+                      "assets/images/level.png",
+                      height: 15
+                  )
+                ],
+                if (diszitoertek['tel'].toString().contains("termés")) ...[
+                  Image.asset(
+                      "assets/images/termes.png",
+                      height: 15
+                  )
+                ],
+              ],
+            ),
           ],
         )
       ],

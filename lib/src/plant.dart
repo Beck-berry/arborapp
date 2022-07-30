@@ -1,4 +1,10 @@
+import 'package:arborapp/src/enums.dart';
+import 'package:arborapp/src/types.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'applicationState.dart';
 
 class Plant extends StatelessWidget {
   const Plant({
@@ -10,94 +16,83 @@ class Plant extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appState = Provider.of<ApplicationState>(context);
+    appState.megnyitottNoveny = noveny.id;
+
     return Scaffold(
         appBar: AppBar(
           title: Text(
             noveny.nev,
           ),
         ),
-        body: Container(
-            margin: const EdgeInsets.all(10.0),
-            child: Column(
-                children: [
-                  IntrinsicHeight(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Expanded(
-                              flex: 2,
-                              child: Image.asset('assets/images/tree.jpg')
+        body: ListView(
+          padding: const EdgeInsets.all(10.0),
+          children: [
+            IntrinsicHeight(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(
+                        flex: 2,
+                        child: Image.asset('assets/images/tree.jpg')
+                    ),
+                    Expanded(
+                        flex: 3,
+                        child: Text(
+                          noveny.leiras,
+                          textAlign: TextAlign.justify,
+                          style: const TextStyle(
+                            fontSize: 13,
                           ),
-                          Expanded(
-                              flex: 3,
-                              child: Text(
-                                noveny.leiras,
-                                textAlign: TextAlign.justify,
-                                style: const TextStyle(
-                                  fontSize: 13,
-                                ),
-                              )
-                          )
-                        ],
-                      )
-                  ),
-                  Container(
-                    margin: const EdgeInsets.symmetric(vertical: 15),
-                    child: AdatTabla(noveny: noveny)
-                  ),
-                  SizedBox(
-                      width: double.infinity,
-                      child: Wrap(
-                        alignment: WrapAlignment.spaceEvenly,
-                        spacing: 10,
-                        runSpacing: 10,
-                        children: [
-                          Image.asset(
-                              'assets/images/tree.jpg',
-                              height: 110
-                          ),
-                          Image.asset(
-                              'assets/images/tree.jpg',
-                              height: 110
-                          ),
-                          Image.asset(
-                              'assets/images/tree.jpg',
-                              height: 110
-                          ),
-                          Image.asset(
-                              'assets/images/tree.jpg',
-                              height: 110
-                          ),
-                          Image.asset(
-                              'assets/images/tree.jpg',
-                              height: 110
-                          ),
-                        ],
-                      )
-                  ),
-                ]
+                        )
+                    )
+                  ],
+                )
+            ),
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 15),
+              child: AdatTabla(noveny: noveny)
+            ),
+            SizedBox(
+                width: double.infinity,
+                child: Wrap(
+                  alignment: WrapAlignment.spaceEvenly,
+                  spacing: 10,
+                  runSpacing: 10,
+                  children: [
+                    Image.asset(
+                        'assets/images/tree.jpg',
+                        height: 110
+                    ),
+                    Image.asset(
+                        'assets/images/tree.jpg',
+                        height: 110
+                    ),
+                    Image.asset(
+                        'assets/images/tree.jpg',
+                        height: 110
+                    ),
+                    Image.asset(
+                        'assets/images/tree.jpg',
+                        height: 110
+                    ),
+                    Image.asset(
+                        'assets/images/tree.jpg',
+                        height: 110
+                    ),
+                  ],
+                )
+            ),
+            const Divider(
+              color: Colors.grey,
+            ),
+            Jegyzet(
+              novenyId: noveny.id,
             )
+          ]
         )
     );
   }
-}
-
-class NovenyAdat {
-  NovenyAdat({
-    required this.nev,
-    required this.leiras,
-    required this.meret,
-    required this.igenyek,
-    required this.diszitoertek,
-    required this.alkalmazas
-  });
-
-  final String nev;
-  final String leiras;
-  final Map<String, dynamic> meret;
-  final Map<String, dynamic> igenyek;
-  final Map<String, dynamic> diszitoertek;
-  final String alkalmazas; // TODO ez lista
 }
 
 class AdatTabla extends StatelessWidget {
@@ -167,61 +162,71 @@ class Meret extends StatelessWidget {
     return Column(
       children: [
         const Text(
-            "Méret:",
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.bold,
-            )
+          "Méret:",
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.bold,
+          )
         ),
         Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Image.asset(
-                'assets/images/fa.png',
-                height: 30
-            ),
-            RotatedBox(
-              quarterTurns: 1,
-              child: Image.asset(
-                  'assets/images/nyil.png',
-                  height: 10
-              ),
-            ),
-            Text(
-              "${meret['magassag']}m",
-              style: const TextStyle(
-                fontSize: 10,
-              ),
-            ),
-            Column(
+            Row(
               children: [
                 Image.asset(
                     'assets/images/fa.png',
                     height: 30
                 ),
-                Image.asset(
-                    'assets/images/nyil.png',
-                    height: 10
+                RotatedBox(
+                  quarterTurns: 1,
+                  child: Image.asset(
+                      'assets/images/nyil.png',
+                      height: 10
+                  ),
+                ),
+                Text(
+                  "${meret['magassag']}m",
+                  style: const TextStyle(
+                    fontSize: 10,
+                  ),
                 ),
               ]
-            ),
-            Text(
-              "${meret['szelesseg']}m",
-              style: const TextStyle(
-                fontSize: 10,
               ),
+            Row(
+              children: [
+                Column(
+                    children: [
+                      Image.asset(
+                          'assets/images/fa.png',
+                          height: 30
+                      ),
+                      Image.asset(
+                          'assets/images/nyil.png',
+                          height: 10
+                      ),
+                    ]
+                ),
+                Text(
+                  "${meret['szelesseg']}m",
+                  style: const TextStyle(
+                    fontSize: 10,
+                  ),
+                ),
+              ],
             ),
-            Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: Image.asset(
+           Row(
+             children: [
+                Image.asset(
                   'assets/images/ido.png',
                   height: 25
-              ),
-            ),
-            Text(
-              "${meret['ido']} év",
-              style: const TextStyle(
-                fontSize: 10,
-              ),
+                ),
+                Text(
+                  "${meret['ido']} év",
+                  style: const TextStyle(
+                    fontSize: 10,
+                  ),
+                )
+              ],
             )
           ],
         )
@@ -267,10 +272,12 @@ class KornyezetiIgenyek extends StatelessWidget {
         ),
         Row(
           children: [
-            Text("pH: ${igenyek['talaj']}",
+            Text(
+                "pH: ${igenyek['talaj']}",
                 style: const TextStyle(
                     fontSize: 10
-                ))
+                )
+            )
           ],
         )
       ],
@@ -448,5 +455,153 @@ class Alkalmazas extends StatelessWidget {
         )
       ],
     );
+  }
+}
+
+class Jegyzet extends StatefulWidget {
+  const Jegyzet({
+    required this.novenyId,
+    super.key
+  });
+
+  final DocumentReference novenyId;
+
+  @override
+  _JegyzetState createState() => _JegyzetState();
+}
+
+class _JegyzetState extends State<Jegyzet> {
+  NoteState _noteState = NoteState.show;
+  bool _showMentesBtn = false;
+  String _szoveg = '';
+  late TextEditingController _controller;
+
+  @override
+  Widget build(BuildContext context) {
+    final appState = Provider.of<ApplicationState>(context);
+
+    if (appState.loginState != LoginState.loggedIn) {
+      return const Text(
+          "Jegyzetet írhatsz a növényhez, miután bejelentkeztél.");
+    }
+
+    // csak ehhez a növényhez tartozó jegyzet megjelenítése
+    bool vanJegyzet = appState.jegyzetek.isNotEmpty && appState.jegyzetek.any((j) => j.noveny == appState.megnyitottNoveny);
+    if (!vanJegyzet) {
+      return ElevatedButton(
+          onPressed: () {
+            setState(() {
+              _noteState = NoteState.write;
+            });
+          },
+          child: const Text("Jegyzet írása")
+      );
+    }
+
+    JegyzetAdat? jegyzet = appState.jegyzetek.firstWhere((j) => j.noveny == appState.megnyitottNoveny);
+
+    switch (_noteState) {
+      case NoteState.write:
+        return Column(
+          children: [
+            TextField(
+              minLines: 5,
+              maxLines: 15,
+              onSubmitted: (value) {
+                _szoveg = value;
+                setState(() {
+                  _showMentesBtn = true;
+                });
+              },
+            ),
+            if (_showMentesBtn) ...[ ElevatedButton(
+                onPressed: () {
+                  appState.saveNote(widget.novenyId, _szoveg);
+                  setState(() {
+                    _noteState = NoteState.show;
+                    _showMentesBtn = false;
+                  });
+                },
+                child: const Text("Mentés")
+              )
+            ]
+          ],
+        );
+      case NoteState.modify:
+        return Column(
+          children: [
+            TextFormField(
+              minLines: 5,
+              maxLines: 15,
+              controller: _controller
+            ),
+            ElevatedButton(
+              onPressed: () {
+                appState.modifyNote(jegyzet.id, _controller.value.text);
+                setState(() {
+                  _noteState = NoteState.show;
+                });
+                _controller.clear();
+              },
+              child: const Text("Mentés")
+            )
+          ],
+        );
+      default:
+        return Column(
+          children: [
+            const Text(
+              "Saját feljegyzések",
+              style: TextStyle(
+                decoration: TextDecoration.underline,
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+              jegyzet.szoveg,
+              textAlign: TextAlign.justify,
+              style: const TextStyle(
+                fontSize: 13,
+              ),
+            ),
+            Row(
+              children: [
+                Expanded(
+                    child: Column(
+                      children: [
+                        const Text(
+                          "Módosítva:",
+                          style: TextStyle(
+                            fontSize: 11,
+                          ),
+                        ),
+                        Text(
+                          "${jegyzet.modositva.year}.${jegyzet.modositva
+                              .month}.${jegyzet.modositva.day}. ${jegyzet
+                              .modositva.hour}:${jegyzet.modositva.minute}",
+                          style: const TextStyle(
+                            fontSize: 10,
+                          ),
+                        ),
+                      ],
+                    )
+                ),
+                Expanded(
+                    child: ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            _noteState = NoteState.modify;
+                            _controller = TextEditingController(text: jegyzet.szoveg);
+                          });
+                        },
+                        child: const Text("Szerkesztés")
+                    )
+                )
+              ],
+            )
+          ],
+        );
+    }
   }
 }

@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:arborapp/src/enums.dart';
-import 'package:arborapp/src/plant.dart';
+import 'package:arborapp/src/types.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -13,11 +13,25 @@ class ApplicationState extends ChangeNotifier {
   LoginState _loginState = LoginState.loggedOut;
   LoginState get loginState => _loginState;
 
+  late String? _currentUser;
+  String? get currentUser => _currentUser;
+
+  late DocumentReference megnyitottNoveny;
+
   List<NovenyAdat> _novenyek = [];
   List<NovenyAdat> get novenyek => _novenyek;
 
   int _novenyekSzama = 0;
   int get novenyekSzama => _novenyekSzama;
+
+  List<JegyzetAdat> _jegyzetek = [];
+  List<JegyzetAdat> get jegyzetek => _jegyzetek;
+
+  int _jegyzetekSzama = 0;
+  int get jegyzetekSzama => _jegyzetekSzama;
+
+  NoteState _noteState = NoteState.show;
+  NoteState get noteState => _noteState;
 
   ApplicationState() {
     init();
@@ -28,10 +42,25 @@ class ApplicationState extends ChangeNotifier {
       options: DefaultFirebaseOptions.currentPlatform,
     );
 
+    initNovenyek();
+
+    FirebaseAuth.instance.userChanges().listen((user) {
+      if (user != null) {
+        _loginState = LoginState.loggedIn;
+        _currentUser = user.uid;
+        initJegyzetek();
+      } else {
+        _loginState = LoginState.loggedOut;
+        _currentUser = null;
+      }
+      notifyListeners();
+    });
+  }
+
+  void initNovenyek() {
     FirebaseFirestore.instance
         .collection('novenyek')
         .orderBy('nev', descending: true)
-    //.limit(50)
         .snapshots()
         .listen((snapshot) {
       _novenyek = [];
@@ -39,6 +68,7 @@ class ApplicationState extends ChangeNotifier {
       for (final document in snapshot.docs) {
         _novenyek.add(
           NovenyAdat(
+              id: document.reference,
               nev: document.data()['nev'] as String,
               leiras: document.data()['leiras'] as String,
               meret: document.data()['meret'],
@@ -49,14 +79,28 @@ class ApplicationState extends ChangeNotifier {
         );
       }
     });
+  }
 
-    FirebaseAuth.instance.userChanges().listen((user) {
-      if (user != null) {
-        _loginState = LoginState.loggedIn;
-      } else {
-        _loginState = LoginState.loggedOut;
+  void initJegyzetek() {
+    FirebaseFirestore.instance
+        .collection('jegyzetek')
+        .orderBy('modositva', descending: true)
+        .where('user', isEqualTo: _currentUser)
+        .snapshots()
+        .listen((snapshot) {
+      _jegyzetek = [];
+      _jegyzetekSzama = snapshot.docs.length;
+      for (final document in snapshot.docs) {
+        _jegyzetek.add(
+          JegyzetAdat(
+              id: document.reference,
+              noveny: document.data()['noveny'],
+              modositva: DateTime.fromMillisecondsSinceEpoch(document.data()['modositva']),
+              szoveg: document.data()['szoveg'] as String,
+              szerzo: document.data()['user']
+          ),
+        );
       }
-      notifyListeners();
     });
   }
 
@@ -132,5 +176,28 @@ class ApplicationState extends ChangeNotifier {
     } on FirebaseAuthException catch (e) {
       errorCallback(e);
     }
+  }
+
+  void saveNote(DocumentReference noveny, String szoveg) async {
+    await FirebaseFirestore.instance
+        .collection('jegyzetek')
+        .add(<String, dynamic>{
+      'szoveg': szoveg,
+      'modositva': DateTime.now().millisecondsSinceEpoch,
+      'noveny': noveny,
+      'user': FirebaseAuth.instance.currentUser!.uid,
+    });
+    initJegyzetek();
+  }
+
+  void modifyNote(DocumentReference jegyzetId, String szoveg) async {
+    await FirebaseFirestore.instance
+        .collection('jegyzetek')
+        .doc(jegyzetId.id)
+        .update(<String, dynamic>{
+      'modositva': DateTime.now().millisecondsSinceEpoch,
+      'szoveg': szoveg,
+    });
+    initJegyzetek();
   }
 }

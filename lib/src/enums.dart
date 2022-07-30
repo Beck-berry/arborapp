@@ -4,3 +4,9 @@ enum LoginState {
   register,
   loggedIn,
 }
+
+enum NoteState {
+  show,
+  write,
+  modify
+}

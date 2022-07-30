@@ -1,4 +1,5 @@
 import 'package:arborapp/src/applicationState.dart';
+import 'package:arborapp/src/notes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -63,20 +64,14 @@ class MyHomePage extends StatelessWidget {
               cimke: "Növény keresése",
               ikon: Icons.search,
               onPress: Consumer<ApplicationState>(
-                builder: (context, appState, _) => Search(
-                    novenyek: appState.novenyek,
-                    novenyekSzama: appState.novenyekSzama
-                ),
+                builder: (context, appState, _) => const Search(),
               ),
             ),
             FoMenuButton(
               cimke: "Saját jegyzeteim",
               ikon: Icons.edit,
               onPress: Consumer<ApplicationState>(
-                builder: (context, appState, _) => Search(
-                    novenyek: appState.novenyek,
-                    novenyekSzama: appState.novenyekSzama
-                ),
+                builder: (context, appState, _) => const Notes(),
               ),
             ),
             FoMenuButton(

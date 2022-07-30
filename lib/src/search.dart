@@ -1,19 +1,22 @@
 import 'package:arborapp/src/plant.dart';
+import 'package:arborapp/src/types.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:searchfield/searchfield.dart';
+
+import 'applicationState.dart';
 
 class Search extends StatelessWidget {
   const Search({
-    required this.novenyek,
-    required this.novenyekSzama,
     super.key
   });
 
-  final List<NovenyAdat> novenyek;
-  final int novenyekSzama;
 
   @override
   Widget build(BuildContext context) {
+    final appState = Provider.of<ApplicationState>(context);
+    List<NovenyAdat> novenyek = appState.novenyek;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -41,7 +44,7 @@ class Search extends StatelessWidget {
               },
             ),
           ),
-          Text("Keresés $novenyekSzama növény között..."),
+          Text("Keresés ${appState.novenyekSzama} növény között..."),
           Expanded(
             child:ListView.builder(
               shrinkWrap: true,

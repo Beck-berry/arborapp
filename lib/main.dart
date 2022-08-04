@@ -69,7 +69,7 @@ class MyHomePage extends StatelessWidget {
             ),
             FoMenuButton(
               cimke: "Saját jegyzeteim",
-              ikon: Icons.edit,
+              ikon: Icons.notes,
               onPress: Consumer<ApplicationState>(
                 builder: (context, appState, _) => const Notes(),
               ),

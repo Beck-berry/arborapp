@@ -49,11 +49,18 @@ class Plant extends StatelessWidget {
                   ],
                 )
             ),
-            Container(
-              margin: const EdgeInsets.symmetric(vertical: 15),
-              child: AdatTabla(noveny: noveny)
+            const Divider(
+              color: Colors.grey,
             ),
-            SizedBox(
+            Column(
+              children: [
+                Meret(meret: noveny.meret),
+                KornyezetiIgenyek(igenyek: noveny.igenyek),
+                Diszitoertek(diszitoertek: noveny.diszitoertek),
+                Alkalmazas(alkalmazas: noveny.alkalmazas),
+              ],
+            ),
+            /*SizedBox(
                 width: double.infinity,
                 child: Wrap(
                   alignment: WrapAlignment.spaceEvenly,
@@ -82,7 +89,7 @@ class Plant extends StatelessWidget {
                     ),
                   ],
                 )
-            ),
+            ),*/
             const Divider(
               color: Colors.grey,
             ),
@@ -91,60 +98,6 @@ class Plant extends StatelessWidget {
             )
           ]
         )
-    );
-  }
-}
-
-class AdatTabla extends StatelessWidget {
-  const AdatTabla ({
-    required this.noveny,
-    super.key
-  });
-
-  final NovenyAdat noveny;
-
-  @override
-  Widget build(BuildContext context) {
-    return Table(
-      border: TableBorder.symmetric(
-        outside: BorderSide.none,
-        inside: const BorderSide(width: 2, color: Colors.grey, style: BorderStyle.solid)
-      ),
-      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-      children: <TableRow>[
-        TableRow(
-            children: [
-              TableCell(
-                  child: Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: Meret(meret: noveny.meret)
-                  )
-              ),
-              TableCell(
-                  child: Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: KornyezetiIgenyek(igenyek: noveny.igenyek)
-                  )
-              ),
-            ]
-        ),
-        TableRow(
-            children: [
-              TableCell(
-                  child: Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: Diszitoertek(diszitoertek: noveny.diszitoertek)
-                  )
-              ),
-              TableCell(
-                  child: Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: Alkalmazas(alkalmazas: noveny.alkalmazas)
-                  )
-              )
-            ]
-        ),
-      ],
     );
   }
 }
@@ -164,7 +117,7 @@ class Meret extends StatelessWidget {
         const Text(
           "Méret:",
           style: TextStyle(
-            fontSize: 13,
+            fontSize: 15,
             fontWeight: FontWeight.bold,
           )
         ),
@@ -187,7 +140,7 @@ class Meret extends StatelessWidget {
                 Text(
                   "${meret['magassag']}m",
                   style: const TextStyle(
-                    fontSize: 10,
+                    fontSize: 12,
                   ),
                 ),
               ]
@@ -209,21 +162,24 @@ class Meret extends StatelessWidget {
                 Text(
                   "${meret['szelesseg']}m",
                   style: const TextStyle(
-                    fontSize: 10,
+                    fontSize: 12,
                   ),
                 ),
               ],
             ),
            Row(
              children: [
-                Image.asset(
-                  'assets/images/ido.png',
-                  height: 25
-                ),
+               Padding(
+                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                 child: Image.asset(
+                   'assets/images/ido.png',
+                   height: 25
+                 ),
+               ),
                 Text(
                   "${meret['ido']} év",
                   style: const TextStyle(
-                    fontSize: 10,
+                    fontSize: 12,
                   ),
                 )
               ],
@@ -250,7 +206,7 @@ class KornyezetiIgenyek extends StatelessWidget {
         const Text(
             "Környezeti igény:",
             style: TextStyle(
-              fontSize: 13,
+              fontSize: 15,
               fontWeight: FontWeight.bold,
             )
         ),
@@ -300,7 +256,7 @@ class Diszitoertek extends StatelessWidget {
         const Text(
             "Díszítőérték:",
             style: TextStyle(
-              fontSize: 13,
+              fontSize: 15,
               fontWeight: FontWeight.bold,
             )
         ),
@@ -311,7 +267,7 @@ class Diszitoertek extends StatelessWidget {
                 const Text(
                     "Tavasz:",
                     style: TextStyle(
-                      fontSize: 10,
+                      fontSize: 13,
                       fontWeight: FontWeight.bold,
                     )
                 ),
@@ -340,7 +296,7 @@ class Diszitoertek extends StatelessWidget {
                 const Text(
                     "Nyár:",
                     style: TextStyle(
-                      fontSize: 10,
+                      fontSize: 13,
                       fontWeight: FontWeight.bold,
                     )
                 ),
@@ -369,7 +325,7 @@ class Diszitoertek extends StatelessWidget {
                 const Text(
                     "Ősz:",
                     style: TextStyle(
-                      fontSize: 10,
+                      fontSize: 13,
                       fontWeight: FontWeight.bold,
                     )
                 ),
@@ -398,7 +354,7 @@ class Diszitoertek extends StatelessWidget {
                 const Text(
                     "Tél:",
                     style: TextStyle(
-                      fontSize: 10,
+                      fontSize: 13,
                       fontWeight: FontWeight.bold,
                     )
                 ),
@@ -444,7 +400,7 @@ class Alkalmazas extends StatelessWidget {
         const Text(
             "Alkalmazási lehetőségek:",
             style: TextStyle(
-              fontSize: 13,
+              fontSize: 15,
               fontWeight: FontWeight.bold,
             )
         ),

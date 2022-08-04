@@ -47,7 +47,7 @@ class Notes extends StatelessWidget {
                   },
                 ),
               ),
-              Text("Keresés ${appState.novenyekSzama} jegyzet között..."),
+              Text("Keresés ${appState.jegyzetekSzama} jegyzet között..."),
               Expanded(
                   child:ListView.builder(
                     shrinkWrap: true,

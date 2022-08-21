@@ -182,6 +182,10 @@ class ApplicationState extends ChangeNotifier {
   }
 
   void saveNote(DocumentReference noveny, String szoveg) async {
+    if (szoveg.isEmpty) {
+      return;
+    }
+
     await FirebaseFirestore.instance
         .collection('jegyzetek')
         .add(<String, dynamic>{
@@ -194,6 +198,10 @@ class ApplicationState extends ChangeNotifier {
   }
 
   void modifyNote(DocumentReference jegyzetId, String szoveg) async {
+    if (szoveg.isEmpty) {
+      return;
+    }
+
     await FirebaseFirestore.instance
         .collection('jegyzetek')
         .doc(jegyzetId.id)
@@ -201,6 +209,14 @@ class ApplicationState extends ChangeNotifier {
       'modositva': DateTime.now().millisecondsSinceEpoch,
       'szoveg': szoveg,
     });
+    initJegyzetek();
+  }
+
+  void deleteNote(DocumentReference jegyzetId) async {
+    await FirebaseFirestore.instance
+        .collection('jegyzetek')
+        .doc(jegyzetId.id)
+        .delete();
     initJegyzetek();
   }
 }

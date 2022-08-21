@@ -428,8 +428,6 @@ class Jegyzet extends StatefulWidget {
 
 class _JegyzetState extends State<Jegyzet> {
   NoteState _noteState = NoteState.show;
-  bool _showMentesBtn = false;
-  String _szoveg = '';
   late TextEditingController _controller;
 
   @override
@@ -444,54 +442,59 @@ class _JegyzetState extends State<Jegyzet> {
     // csak ehhez a növényhez tartozó jegyzet megjelenítése
     bool vanJegyzet = appState.jegyzetek.isNotEmpty && appState.jegyzetek.any((j) => j.noveny == appState.megnyitottNoveny);
     if (!vanJegyzet) {
-      return ElevatedButton(
-          onPressed: () {
-            setState(() {
-              _noteState = NoteState.write;
-            });
-          },
-          child: const Text("Jegyzet írása")
-      );
-    }
-
-    JegyzetAdat? jegyzet = appState.jegyzetek.firstWhere((j) => j.noveny == appState.megnyitottNoveny);
-
-    switch (_noteState) {
-      case NoteState.write:
-        return Column(
-          children: [
-            TextField(
-              minLines: 5,
-              maxLines: 15,
-              onSubmitted: (value) {
-                _szoveg = value;
-                setState(() {
-                  _showMentesBtn = true;
-                });
-              },
-            ),
-            if (_showMentesBtn) ...[ ElevatedButton(
-                onPressed: () {
-                  appState.saveNote(widget.novenyId, _szoveg);
-                  setState(() {
-                    _noteState = NoteState.show;
-                    _showMentesBtn = false;
-                  });
-                },
-                child: const Text("Mentés")
-              )
-            ]
-          ],
+      if (_noteState == NoteState.show) {
+        return ElevatedButton(
+            onPressed: () {
+              setState(() {
+                _noteState = NoteState.write;
+              });
+              _controller = TextEditingController();
+            },
+            child: const Text("Jegyzet írása")
         );
-      case NoteState.modify:
+      } else if (_noteState == NoteState.write) {
         return Column(
           children: [
             TextFormField(
               minLines: 5,
               maxLines: 15,
+              autofocus: true,
               controller: _controller
             ),
             ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    _noteState = NoteState.show;
+                  });
+                },
+                child: const Text("Mégsem")
+            ),
+            ElevatedButton(
+                onPressed: () {
+                  appState.saveNote(widget.novenyId, _controller.value.text);
+                  _controller.clear();
+                  setState(() {
+                    _noteState = NoteState.show;
+                  });
+                },
+                child: const Text("Mentés")
+            )
+          ],
+        );
+      }
+    }
+
+    JegyzetAdat? jegyzet = appState.jegyzetek.firstWhere((j) => j.noveny == appState.megnyitottNoveny);
+
+    if (_noteState == NoteState.modify) {
+      return Column(
+        children: [
+          TextFormField(
+              minLines: 5,
+              maxLines: 15,
+              controller: _controller
+          ),
+          ElevatedButton(
               onPressed: () {
                 appState.modifyNote(jegyzet.id, _controller.value.text);
                 setState(() {
@@ -500,64 +503,75 @@ class _JegyzetState extends State<Jegyzet> {
                 _controller.clear();
               },
               child: const Text("Mentés")
-            )
-          ],
-        );
-      default:
-        return Column(
-          children: [
-            const Text(
-              "Saját feljegyzések",
-              style: TextStyle(
-                decoration: TextDecoration.underline,
-                fontSize: 15,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Text(
-              jegyzet.szoveg,
-              textAlign: TextAlign.justify,
-              style: const TextStyle(
-                fontSize: 13,
-              ),
-            ),
-            Row(
-              children: [
-                Expanded(
-                    child: Column(
-                      children: [
-                        const Text(
-                          "Módosítva:",
-                          style: TextStyle(
-                            fontSize: 11,
-                          ),
-                        ),
-                        Text(
-                          "${jegyzet.modositva.year}.${jegyzet.modositva
-                              .month}.${jegyzet.modositva.day}. ${jegyzet
-                              .modositva.hour}:${jegyzet.modositva.minute}",
-                          style: const TextStyle(
-                            fontSize: 10,
-                          ),
-                        ),
-                      ],
-                    )
-                ),
-                Expanded(
-                    child: ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            _noteState = NoteState.modify;
-                            _controller = TextEditingController(text: jegyzet.szoveg);
-                          });
-                        },
-                        child: const Text("Szerkesztés")
-                    )
-                )
-              ],
-            )
-          ],
-        );
+          )
+        ],
+      );
     }
+
+    return Column(
+      children: [
+        const Text(
+          "Saját feljegyzések",
+          style: TextStyle(
+            decoration: TextDecoration.underline,
+            fontSize: 15,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        Text(
+          jegyzet.szoveg,
+          textAlign: TextAlign.justify,
+          style: const TextStyle(
+            fontSize: 13,
+          ),
+        ),
+        Row(
+          children: [
+            Expanded(
+              child: Column(
+                children: [
+                  const Text(
+                    "Módosítva:",
+                    style: TextStyle(
+                      fontSize: 11,
+                    ),
+                  ),
+                  Text(
+                    "${jegyzet.modositva.year}.${jegyzet.modositva
+                        .month}.${jegyzet.modositva.day}. ${jegyzet
+                        .modositva.hour}:${jegyzet.modositva.minute}",
+                    style: const TextStyle(
+                      fontSize: 10,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: ElevatedButton(
+                onPressed: () {
+                  appState.deleteNote(jegyzet.id);
+                  setState(() {
+                    _noteState = NoteState.show;
+                  });
+                },
+                child: const Text("Törlés")
+              )
+            ),
+            Expanded(
+              child: ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    _noteState = NoteState.modify;
+                    _controller = TextEditingController(text: jegyzet.szoveg);
+                    });
+                  },
+                child: const Text("Szerkesztés")
+              )
+            )
+          ],
+        )
+      ],
+    );
   }
 }

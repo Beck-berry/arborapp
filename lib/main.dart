@@ -55,10 +55,12 @@ class MyHomePage extends StatelessWidget {
                     textAlign: TextAlign.justify,
                 )
              ),
-            const FoMenuButton(
+            FoMenuButton(
               cimke: "Barangolás a térképen",
               ikon: Icons.map,
-              onPress: Map(),
+              onPress: Consumer<ApplicationState>(
+                builder: (context, appState, _) => const Terkep(),
+              ),
             ),
             FoMenuButton(
               cimke: "Növény keresése",

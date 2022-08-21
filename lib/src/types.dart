@@ -1,4 +1,6 @@
+import 'package:arborapp/src/enums.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:latlong2/latlong.dart';
 
 class NovenyAdat {
   NovenyAdat({
@@ -8,7 +10,9 @@ class NovenyAdat {
     required this.meret,
     required this.igenyek,
     required this.diszitoertek,
-    required this.alkalmazas
+    required this.alkalmazas,
+    required this.coords,
+    required this.tipus
   });
 
   final DocumentReference id;
@@ -18,6 +22,8 @@ class NovenyAdat {
   final Map<String, dynamic> igenyek;
   final Map<String, dynamic> diszitoertek;
   final String alkalmazas;
+  final LatLng coords;
+  final NovenyTipus tipus;
 }
 
 class JegyzetAdat {

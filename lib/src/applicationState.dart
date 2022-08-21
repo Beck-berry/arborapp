@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:latlong2/latlong.dart';
 
 import '../firebase_options.dart';
 
@@ -74,7 +75,9 @@ class ApplicationState extends ChangeNotifier {
               meret: document.data()['meret'],
               igenyek: document.data()['kornyezeti_igenyek'],
               diszitoertek: document.data()['diszitoertek'],
-              alkalmazas: document.data()['alkalmazas'] as String
+              alkalmazas: document.data()['alkalmazas'] as String,
+              coords: LatLng(document.data()['lat'], document.data()['lon']),
+              tipus: NovenyTipus.values.byName(document.data()['tipus'])
           ),
         );
       }

@@ -166,6 +166,7 @@ class ApplicationState extends ChangeNotifier {
 
   void signOut() {
     FirebaseAuth.instance.signOut();
+    _currentUser = null;
     _loginState = LoginState.loggedOut;
     notifyListeners();
   }
@@ -176,6 +177,25 @@ class ApplicationState extends ChangeNotifier {
       ) async {
     try {
       await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+    } on FirebaseAuthException catch (e) {
+      errorCallback(e);
+    }
+  }
+
+  Future<void> deleteAcc(
+      void Function(FirebaseAuthException e) errorCallback
+      ) async {
+    try {
+      FirebaseAuth.instance.currentUser?.delete();
+      for (var j in _jegyzetek) {
+        FirebaseFirestore.instance
+            .collection('jegyzetek')
+            .doc(j.id.id)
+            .delete();
+      }
+      _loginState = LoginState.loggedOut;
+      _currentUser = null;
+      notifyListeners();
     } on FirebaseAuthException catch (e) {
       errorCallback(e);
     }

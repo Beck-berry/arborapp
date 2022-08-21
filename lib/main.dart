@@ -89,6 +89,7 @@ class MyHomePage extends StatelessWidget {
                   megszakit: appState.megszakit,
                   register: appState.register,
                   signOut: appState.signOut,
+                  deleteAcc: appState.deleteAcc,
                   resetPassword: appState.resetPassword
                 )
               ),

@@ -14,6 +14,7 @@ class Profile extends StatelessWidget {
     required this.megszakit,
     required this.register,
     required this.signOut,
+    required this.deleteAcc,
     required this.resetPassword,
     super.key
   });
@@ -38,6 +39,7 @@ class Profile extends StatelessWidget {
       void Function(Exception e) error,
       ) register;
   final void Function() signOut;
+  final void Function(void Function(Exception e) error) deleteAcc;
   final void Function(
       String email,
       void Function(Exception e) error,
@@ -344,9 +346,7 @@ class Profile extends StatelessWidget {
                         letterSpacing: 2.5,
                       ),
                     ),
-                    Text(_user.email.toString()),
-                    Text('iskolád vagy valami'),
-                    Text('szakod vagy valami')
+                    Text(_user.email.toString())
                   ],
                 ),
               ),
@@ -368,10 +368,10 @@ class Profile extends StatelessWidget {
                   ),
                 ),
               ),
-              Container(
+              /*Container(
                 margin: const EdgeInsets.symmetric(vertical: 5.0),
                 child: ElevatedButton.icon(
-                  onPressed: () {}, // TODO form
+                  onPressed: () {}, // TODO form, ha kellenek még extra adatok
                   icon: const Icon(Icons.edit, size: 20),
                   label: const Text("Adatok módosítása"),
                   style: ElevatedButton.styleFrom(
@@ -380,11 +380,11 @@ class Profile extends StatelessWidget {
                       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0)))
                   ),
                 )
-              ),
+              ),*/
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 5.0),
                 child: ElevatedButton.icon(
-                  onPressed: () {}, // TODO form
+                  onPressed: () {}, // TODO jelszómódosító form
                   icon: const Icon(Icons.edit, size: 20),
                   label: const Text("Jelszó megváltoztatása"),
                   style: ElevatedButton.styleFrom(
@@ -406,6 +406,50 @@ class Profile extends StatelessWidget {
                       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0)))
                   ),
                 )
+              ),
+              Container(
+                  margin: const EdgeInsets.symmetric(vertical: 35.0),
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      showDialog<void>(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: const Text(
+                              "Regisztráció törlése",
+                              style: TextStyle(fontSize: 18),
+                            ),
+                            content: const Text(
+                              "Biztosan törölni szeretnéd a fiókodat az alkalmazásból? A hozzátartozó adatok el fognak veszni.",
+                              style: TextStyle(fontSize: 13),
+                            ),
+                            actions: <Widget>[
+                              ElevatedButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('Mégsem'),
+                              ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  deleteAcc((e) => _showHibaUzenet(context,
+                                  'Hiba történt a felhasználó törlése közben.', e));
+                                },
+                                child: const Text('Igen'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                    icon: const Icon(Icons.delete, size: 20),
+                    label: const Text("Regisztráció törlése"),
+                    style: ElevatedButton.styleFrom(
+                        primary: Colors.redAccent,
+                        minimumSize: const Size.fromHeight(50),
+                        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0)))
+                    ),
+                  )
               )
             ]
           ),

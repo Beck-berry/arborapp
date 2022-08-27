@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'src/map.dart';
-import 'src/search.dart';
 import 'src/profile.dart';
+import 'src/search.dart';
 
 void main() {
   runApp(const Arborapp());
@@ -59,8 +59,8 @@ class MyHomePage extends StatelessWidget {
               cimke: "Barangolás a térképen",
               ikon: Icons.map,
               onPress: Consumer<ApplicationState>(
-                builder: (context, appState, _) => const Terkep(),
-              ),
+                builder: (context, appState, _) => const Terkep(novenyId: null),
+            ),
             ),
             FoMenuButton(
               cimke: "Növény keresése",

@@ -11,10 +11,16 @@ import 'package:provider/provider.dart';
 import 'applicationState.dart';
 
 class Terkep extends StatelessWidget {
-  const Terkep({Key? key}) : super(key: key);
+  const Terkep({required this.novenyId, super.key});
+
+  final DocumentReference? novenyId;
 
   Future<List<NovenyKoordinata>> loadNovenyKoordinatak(appState) async {
-    return await appState.initKoordinatak();
+    if (novenyId == null) {
+      return await appState.initKoordinatak();
+    } else {
+      return await appState.getKoordinatak(novenyId);
+    }
   }
 
   @override

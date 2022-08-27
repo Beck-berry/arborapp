@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'applicationState.dart';
+import 'map.dart';
 
 class Plant extends StatelessWidget {
   const Plant({required this.noveny, super.key});
@@ -20,7 +21,6 @@ class Plant extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final appState = Provider.of<ApplicationState>(context);
-    appState.megnyitottNoveny = noveny.id;
 
     return FutureBuilder<NovenyAdat>(
         future: loadNovenyAdat(appState),
@@ -110,12 +110,19 @@ class _ShowNovenyAdat extends StatelessWidget {
                 },
                 child: const Text("További képek megtekintése"),
               ),
+              OutlinedButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Terkep(novenyId: noveny.id)));
+                  },
+                  child: const Text("Mutasd a térképen!")),
               const Divider(
                 color: Colors.grey,
               ),
               Jegyzet(novenyId: noveny.id)
-            ]
-        )
+            ])
     );
   }
 }
@@ -424,7 +431,8 @@ class _JegyzetState extends State<Jegyzet> {
     }
 
     // csak ehhez a növényhez tartozó jegyzet megjelenítése
-    bool vanJegyzet = appState.jegyzetek.isNotEmpty && appState.jegyzetek.any((j) => j.noveny == appState.megnyitottNoveny);
+    bool vanJegyzet = appState.jegyzetek.isNotEmpty &&
+        appState.jegyzetek.any((j) => j.noveny == widget.novenyId);
     if (!vanJegyzet) {
       if (_noteState == NoteState.show) {
         return ElevatedButton(
@@ -468,7 +476,8 @@ class _JegyzetState extends State<Jegyzet> {
       }
     }
 
-    JegyzetAdat? jegyzet = appState.jegyzetek.firstWhere((j) => j.noveny == appState.megnyitottNoveny);
+    JegyzetAdat? jegyzet =
+        appState.jegyzetek.firstWhere((j) => j.noveny == widget.novenyId);
 
     if (_noteState == NoteState.modify) {
       return Column(

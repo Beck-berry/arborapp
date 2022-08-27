@@ -18,8 +18,6 @@ class ApplicationState extends ChangeNotifier {
 
   String? get currentUser => _currentUser;
 
-  late DocumentReference megnyitottNoveny;
-
   List<Noveny> _novenyek = [];
 
   List<Noveny> get novenyek => _novenyek;

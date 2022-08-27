@@ -139,51 +139,33 @@ class Meret extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const Text(
-            "Méret:",
+        const Text("Méret:",
             style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.bold,
-            )
-        ),
+            )),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Row(
-                children: [
-                  Image.asset(
-                      'assets/images/fa.png',
-                      height: 30
-                  ),
-                  RotatedBox(
-                    quarterTurns: 1,
-                    child: Image.asset(
-                        'assets/images/nyil.png',
-                        height: 10
-                    ),
-                  ),
-                  Text(
-                    "${meret['magassag']}m",
-                    style: const TextStyle(
-                      fontSize: 12,
-                    ),
-                  ),
-                ]
-            ),
+            Row(children: [
+              Image.asset('assets/images/fa.png', height: 30),
+              RotatedBox(
+                quarterTurns: 1,
+                child: Image.asset('assets/images/nyil.png', height: 10),
+              ),
+              Text(
+                "${meret['magassag']}m",
+                style: const TextStyle(
+                  fontSize: 12,
+                ),
+              ),
+            ]),
             Row(
               children: [
-                Column(
-                    children: [
-                      Image.asset(
-                          'assets/images/fa.png',
-                          height: 30
-                      ),
-                      Image.asset(
-                          'assets/images/nyil.png',
-                          height: 10
-                      ),
-                    ]
-                ),
+                Column(children: [
+                  Image.asset('assets/images/fa.png', height: 30),
+                  Image.asset('assets/images/nyil.png', height: 10),
+                ]),
                 Text(
                   "${meret['szelesseg']}m",
                   style: const TextStyle(
@@ -196,10 +178,7 @@ class Meret extends StatelessWidget {
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Image.asset(
-                      'assets/images/ido.png',
-                      height: 25
-                  ),
+                  child: Image.asset('assets/images/ido.png', height: 25),
                 ),
                 Text(
                   "${meret['ido']} év",
@@ -228,13 +207,11 @@ class KornyezetiIgenyek extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const Text(
-            "Környezeti igény:",
+        const Text("Környezeti igény:",
             style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.bold,
-            )
-        ),
+            )),
         Row(
           children: [
             if (igenyek['fenyigeny'].contains("napos")) ...[
@@ -247,12 +224,8 @@ class KornyezetiIgenyek extends StatelessWidget {
         ),
         Row(
           children: [
-            Text(
-                "pH: ${igenyek['talaj']}",
-                style: const TextStyle(
-                    fontSize: 10
-                )
-            )
+            Text("pH: ${igenyek['talaj']}",
+                style: const TextStyle(fontSize: 10))
           ],
         )
       ],
@@ -261,116 +234,83 @@ class KornyezetiIgenyek extends StatelessWidget {
 }
 
 class Diszitoertek extends StatelessWidget {
-  const Diszitoertek({
-    required this.diszitoertek,
-    super.key
-  });
+  const Diszitoertek({required this.diszitoertek, super.key});
 
   final Map<String, dynamic> diszitoertek;
+
+  Widget showLista(List<dynamic> evszak) {
+    return Row(
+      children: [
+        if (evszak.contains("virag")) ...[
+          Image.asset("assets/images/virag.png", height: 15)
+        ],
+        if (evszak.contains("lomb")) ...[
+          Image.asset("assets/images/level.png", height: 15)
+        ],
+        if (evszak.contains("termes")) ...[
+          Image.asset("assets/images/termes.png", height: 15)
+        ],
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const Text(
-            "Díszítőérték:",
+        const Text("Díszítőérték:",
             style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.bold,
-            )
-        ),
-        Row(
+            )),
+        Row(children: [
+          Expanded(
+              child: Column(
             children: [
-              Expanded(
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          const Text(
-                              "Tavasz:",
-                              style: TextStyle(
-                                fontSize: 13,
-                              )
-                          ),
-                          if (diszitoertek['tavasz'].contains("virag")) ...[
-                    Image.asset("assets/images/virag.png", height: 15)
-                  ],
-                          if (diszitoertek['tavasz'].contains("lomb")) ...[
-                    Image.asset("assets/images/level.png", height: 15)
-                  ],
-                          if (diszitoertek['tavasz'].contains("termes")) ...[
-                    Image.asset("assets/images/termes.png", height: 15)
-                  ],
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          const Text(
-                              "Nyár:",
-                              style: TextStyle(
-                                fontSize: 13,
-                              )
-                          ),
-                          if (diszitoertek['nyar'].contains("virag")) ...[
-                    Image.asset("assets/images/virag.png", height: 15)
-                  ],
-                          if (diszitoertek['nyar'].contains("lomb")) ...[
-                    Image.asset("assets/images/level.png", height: 15)
-                  ],
-                          if (diszitoertek['nyar'].contains("termes")) ...[
-                    Image.asset("assets/images/termes.png", height: 15)
-                  ],
-                        ],
-                      )
-                    ],
-                  )
+              Row(
+                children: [
+                  const Text("Tavasz:",
+                      style: TextStyle(
+                        fontSize: 13,
+                      )),
+                  showLista(diszitoertek['tavasz'])
+                ],
               ),
-              Expanded(
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          const Text(
-                              "Ősz:",
-                              style: TextStyle(
-                                fontSize: 13,
-                              )
-                          ),
-                          if (diszitoertek['osz'].contains("virag")) ...[
-                    Image.asset("assets/images/virag.png", height: 15)
-                  ],
-                          if (diszitoertek['osz'].contains("lomb")) ...[
-                    Image.asset("assets/images/level.png", height: 15)
-                  ],
-                          if (diszitoertek['osz'].contains("termes")) ...[
-                    Image.asset("assets/images/termes.png", height: 15)
-                  ],
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          const Text(
-                              "Tél:",
-                              style: TextStyle(
-                                fontSize: 13,
-                              )
-                          ),
-                          if (diszitoertek['tel'].contains("virag")) ...[
-                    Image.asset("assets/images/virag.png", height: 15)
-                  ],
-                          if (diszitoertek['tel'].contains("lomb")) ...[
-                    Image.asset("assets/images/level.png", height: 15)
-                  ],
-                          if (diszitoertek['tel'].contains("termes")) ...[
-                    Image.asset("assets/images/termes.png", height: 15)
-                  ],
-                        ],
-                      ),
-                    ],
-                  )
+              Row(
+                children: [
+                  const Text("Nyár:",
+                      style: TextStyle(
+                        fontSize: 13,
+                      )),
+                  showLista(diszitoertek['nyar'])
+                ],
+              )
+            ],
+          )),
+          Expanded(
+              child: Column(
+            children: [
+              Row(
+                children: [
+                  const Text("Ősz:",
+                      style: TextStyle(
+                        fontSize: 13,
+                      )),
+                  showLista(diszitoertek['osz'])
+                ],
               ),
-            ]
-        ),
+              Row(
+                children: [
+                  const Text("Tél:",
+                      style: TextStyle(
+                        fontSize: 13,
+                      )),
+                  showLista(diszitoertek['tel'])
+                ],
+              ),
+            ],
+          )),
+        ]),
       ],
     );
   }
@@ -389,15 +329,11 @@ class Alkalmazas extends StatelessWidget {
             style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.bold,
-            )
-        ),
+            )),
         Row(
           children: [
             const Text("|| "),
-            for (String a in alkalmazas) ...[
-              Text(a),
-              const Text(" || ")
-            ]
+            for (String a in alkalmazas) ...[Text(a + " || ")]
           ],
         )
       ],
@@ -442,8 +378,7 @@ class _JegyzetState extends State<Jegyzet> {
               });
               _controller = TextEditingController();
             },
-            child: const Text("Jegyzet írása")
-        );
+            child: const Text("Jegyzet írása"));
       } else if (_noteState == NoteState.write) {
         return Column(
           children: [
@@ -451,16 +386,14 @@ class _JegyzetState extends State<Jegyzet> {
                 minLines: 5,
                 maxLines: 15,
                 autofocus: true,
-                controller: _controller
-            ),
+                controller: _controller),
             ElevatedButton(
                 onPressed: () {
                   setState(() {
                     _noteState = NoteState.show;
                   });
                 },
-                child: const Text("Mégsem")
-            ),
+                child: const Text("Mégsem")),
             ElevatedButton(
                 onPressed: () {
                   appState.saveNote(widget.novenyId, _controller.value.text);
@@ -469,8 +402,7 @@ class _JegyzetState extends State<Jegyzet> {
                     _noteState = NoteState.show;
                   });
                 },
-                child: const Text("Mentés")
-            )
+                child: const Text("Mentés"))
           ],
         );
       }
@@ -482,11 +414,7 @@ class _JegyzetState extends State<Jegyzet> {
     if (_noteState == NoteState.modify) {
       return Column(
         children: [
-          TextFormField(
-              minLines: 5,
-              maxLines: 15,
-              controller: _controller
-          ),
+          TextFormField(minLines: 5, maxLines: 15, controller: _controller),
           ElevatedButton(
               onPressed: () {
                 appState.modifyNote(jegyzet.id, _controller.value.text);
@@ -495,8 +423,7 @@ class _JegyzetState extends State<Jegyzet> {
                 });
                 _controller.clear();
               },
-              child: const Text("Mentés")
-          )
+              child: const Text("Mentés"))
         ],
       );
     }
@@ -530,9 +457,7 @@ class _JegyzetState extends State<Jegyzet> {
                     ),
                   ),
                   Text(
-                    "${jegyzet.modositva.year}.${jegyzet.modositva
-                        .month}.${jegyzet.modositva.day}. ${jegyzet
-                        .modositva.hour}:${jegyzet.modositva.minute}",
+                    "${jegyzet.modositva.year}.${jegyzet.modositva.month}.${jegyzet.modositva.day}. ${jegyzet.modositva.hour}:${jegyzet.modositva.minute}",
                     style: const TextStyle(
                       fontSize: 10,
                     ),
@@ -548,20 +473,17 @@ class _JegyzetState extends State<Jegyzet> {
                         _noteState = NoteState.show;
                       });
                     },
-                    child: const Text("Törlés")
-                )
-            ),
+                    child: const Text("Törlés"))),
             Expanded(
                 child: ElevatedButton(
                     onPressed: () {
                       setState(() {
                         _noteState = NoteState.modify;
-                        _controller = TextEditingController(text: jegyzet.szoveg);
+                        _controller =
+                            TextEditingController(text: jegyzet.szoveg);
                       });
                     },
-                    child: const Text("Szerkesztés")
-                )
-            )
+                    child: const Text("Szerkesztés")))
           ],
         )
       ],

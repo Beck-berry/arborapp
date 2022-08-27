@@ -6,29 +6,34 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:latlong2/latlong.dart';
 
 import '../firebase_options.dart';
 
 class ApplicationState extends ChangeNotifier {
   LoginState _loginState = LoginState.loggedOut;
+
   LoginState get loginState => _loginState;
 
   late String? _currentUser;
+
   String? get currentUser => _currentUser;
 
   late DocumentReference megnyitottNoveny;
 
-  List<NovenyAdat> _novenyek = [];
-  List<NovenyAdat> get novenyek => _novenyek;
+  List<Noveny> _novenyek = [];
+
+  List<Noveny> get novenyek => _novenyek;
 
   int _novenyekSzama = 0;
+
   int get novenyekSzama => _novenyekSzama;
 
   List<JegyzetAdat> _jegyzetek = [];
+
   List<JegyzetAdat> get jegyzetek => _jegyzetek;
 
   int _jegyzetekSzama = 0;
+
   int get jegyzetekSzama => _jegyzetekSzama;
 
   NoteState _noteState = NoteState.show;
@@ -68,20 +73,69 @@ class ApplicationState extends ChangeNotifier {
       _novenyekSzama = snapshot.docs.length;
       for (final document in snapshot.docs) {
         _novenyek.add(
-          NovenyAdat(
+          Noveny(
               id: document.reference,
               nev: document.data()['nev'] as String,
-              leiras: document.data()['leiras'] as String,
-              meret: document.data()['meret'],
-              igenyek: document.data()['kornyezeti_igenyek'],
-              diszitoertek: document.data()['diszitoertek'],
-              alkalmazas: document.data()['alkalmazas'] as String,
-              coords: LatLng(document.data()['lat'], document.data()['lon']),
-              tipus: NovenyTipus.values.byName(document.data()['tipus'])
-          ),
+              tipus: NovenyTipus.values.byName(document.data()['tipus'])),
         );
       }
     });
+  }
+
+  Future<NovenyAdat> getNovenyAdat(DocumentReference novenyId) async {
+    var snapshot = await FirebaseFirestore.instance
+        .collection('novenyAdat')
+        .where('noveny_id', isEqualTo: novenyId)
+        .limit(1)
+        .get();
+
+    var document = snapshot.docs[0];
+    return NovenyAdat(
+        id: document.reference,
+        novenyId: document.data()['noveny_id'] as DocumentReference,
+        leiras: document.data()['leiras'] as String,
+        meret: document.data()['meret'],
+        igenyek: document.data()['kornyezeti_igeny'],
+        diszitoertek: document.data()['diszitoertek'],
+        alkalmazas: document.data()['alkalmazas']);
+  }
+
+  Future<List<NovenyKoordinata>> initKoordinatak() async {
+    List<NovenyKoordinata> koordinatak = [];
+
+    FirebaseFirestore.instance
+        .collection('koordinata')
+        .snapshots()
+        .listen((snapshot) {
+      for (final document in snapshot.docs) {
+        koordinatak.add(NovenyKoordinata(
+            id: document.reference,
+            novenyId: document.data()['noveny_id'] as DocumentReference,
+            coords: document.data()['coords']));
+      }
+    });
+
+    return koordinatak;
+  }
+
+  Future<List<NovenyKoordinata>> getKoordinatak(
+      DocumentReference novenyId) async {
+    List<NovenyKoordinata> koordinatak = [];
+
+    FirebaseFirestore.instance
+        .collection('koordinata')
+        .where('noveny_id', isEqualTo: novenyId)
+        .snapshots()
+        .listen((snapshot) {
+      for (final document in snapshot.docs) {
+        koordinatak.add(NovenyKoordinata(
+            id: document.reference,
+            novenyId: document.data()['noveny_id'] as DocumentReference,
+            coords: document.data()['coords']));
+      }
+    });
+
+    return koordinatak;
   }
 
   void initJegyzetek() {

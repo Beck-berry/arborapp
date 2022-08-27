@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:arborapp/src/enums.dart';
 import 'package:arborapp/src/types.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,18 +9,46 @@ import 'package:provider/provider.dart';
 import 'applicationState.dart';
 
 class Plant extends StatelessWidget {
-  const Plant({
-    required this.noveny,
-    super.key
-  });
+  const Plant({required this.noveny, super.key});
 
-  final NovenyAdat noveny;
+  final Noveny noveny;
+
+  Future<NovenyAdat> loadNovenyAdat(appState) async {
+    return await appState.getNovenyAdat(noveny.id);
+  }
 
   @override
   Widget build(BuildContext context) {
     final appState = Provider.of<ApplicationState>(context);
     appState.megnyitottNoveny = noveny.id;
 
+    return FutureBuilder<NovenyAdat>(
+        future: loadNovenyAdat(appState),
+        builder: (BuildContext context,
+            AsyncSnapshot<NovenyAdat> novenyAdatSnapshot) {
+          switch (novenyAdatSnapshot.connectionState) {
+            case ConnectionState.waiting:
+              return const Text('Loading....');
+            default:
+              if (novenyAdatSnapshot.hasError) {
+                return Text('Error: ${novenyAdatSnapshot.error}');
+              } else {
+                return _ShowNovenyAdat(
+                    noveny: noveny, novenyAdat: novenyAdatSnapshot.data);
+              }
+          }
+        });
+  }
+}
+
+class _ShowNovenyAdat extends StatelessWidget {
+  const _ShowNovenyAdat({required this.noveny, required this.novenyAdat});
+
+  final Noveny noveny;
+  final NovenyAdat? novenyAdat;
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           title: Text(
@@ -40,46 +70,43 @@ class Plant extends StatelessWidget {
                       Expanded(
                           flex: 3,
                           child: Text(
-                            noveny.leiras,
-                            textAlign: TextAlign.justify,
-                            style: const TextStyle(
-                              fontSize: 13,
-                            ),
-                          )
-                      )
-                    ],
-                  )
-              ),
+                            novenyAdat!.leiras,
+                        textAlign: TextAlign.justify,
+                        style: const TextStyle(
+                          fontSize: 13,
+                        ),
+                      ))
+                ],
+              )),
               const Divider(
                 color: Colors.grey,
               ),
-              Meret(meret: noveny.meret),
-              KornyezetiIgenyek(igenyek: noveny.igenyek),
-              Diszitoertek(diszitoertek: noveny.diszitoertek),
-              Alkalmazas(alkalmazasString: noveny.alkalmazas),
+              Meret(meret: novenyAdat!.meret),
+              KornyezetiIgenyek(igenyek: novenyAdat!.igenyek),
+              Diszitoertek(diszitoertek: novenyAdat!.diszitoertek),
+              Alkalmazas(alkalmazas: novenyAdat!.alkalmazas),
               OutlinedButton(
                 onPressed: () {
                   showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: Text(noveny.nev),
-                        content: Container(
-                          width: double.maxFinite,
-                          height: MediaQuery.of(context).size.height,
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: 5,
-                            itemBuilder: (BuildContext context, int index) {
-                              return Image.asset(
-                                'assets/images/tree.jpg', // TODO idetartozo kepek
-                              );
-                            },
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text(noveny.nev),
+                          content: Container(
+                            width: double.maxFinite,
+                            height: MediaQuery.of(context).size.height,
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: 5,
+                              itemBuilder: (BuildContext context, int index) {
+                                return Image.asset(
+                                  'assets/images/tree.jpg', // TODO idetartozo kepek
+                                );
+                              },
+                            ),
                           ),
-                        ),
-                      );
-                    }
-                  );
+                        );
+                      });
                 },
                 child: const Text("További képek megtekintése"),
               ),
@@ -106,36 +133,36 @@ class Meret extends StatelessWidget {
     return Column(
       children: [
         const Text(
-          "Méret:",
-          style: TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.bold,
-          )
+            "Méret:",
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+            )
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Row(
-              children: [
-                Image.asset(
-                    'assets/images/fa.png',
-                    height: 30
-                ),
-                RotatedBox(
-                  quarterTurns: 1,
-                  child: Image.asset(
-                      'assets/images/nyil.png',
-                      height: 10
+                children: [
+                  Image.asset(
+                      'assets/images/fa.png',
+                      height: 30
                   ),
-                ),
-                Text(
-                  "${meret['magassag']}m",
-                  style: const TextStyle(
-                    fontSize: 12,
+                  RotatedBox(
+                    quarterTurns: 1,
+                    child: Image.asset(
+                        'assets/images/nyil.png',
+                        height: 10
+                    ),
                   ),
-                ),
-              ]
-              ),
+                  Text(
+                    "${meret['magassag']}m",
+                    style: const TextStyle(
+                      fontSize: 12,
+                    ),
+                  ),
+                ]
+            ),
             Row(
               children: [
                 Column(
@@ -158,15 +185,15 @@ class Meret extends StatelessWidget {
                 ),
               ],
             ),
-           Row(
-             children: [
-               Padding(
-                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                 child: Image.asset(
-                   'assets/images/ido.png',
-                   height: 25
-                 ),
-               ),
+            Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Image.asset(
+                      'assets/images/ido.png',
+                      height: 25
+                  ),
+                ),
                 Text(
                   "${meret['ido']} év",
                   style: const TextStyle(
@@ -203,17 +230,11 @@ class KornyezetiIgenyek extends StatelessWidget {
         ),
         Row(
           children: [
-            if (igenyek['fenyigeny'].toString().contains("napos")) ...[
-              Image.asset(
-                  "assets/images/napos.png",
-                  height: 35
-              )
+            if (igenyek['fenyigeny'].contains("napos")) ...[
+              Image.asset("assets/images/napos.png", height: 35)
             ],
-            if (igenyek['fenyigeny'].toString().contains("félárnyékos")) ...[
-              Image.asset(
-                  "assets/images/felarnyekos.png",
-                  height: 35
-              )
+            if (igenyek['fenyigeny'].contains("felarnyekos")) ...[
+              Image.asset("assets/images/felarnyekos.png", height: 35)
             ],
           ],
         ),
@@ -252,132 +273,96 @@ class Diszitoertek extends StatelessWidget {
             )
         ),
         Row(
-          children: [
-            Expanded(
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        const Text(
-                            "Tavasz:",
-                            style: TextStyle(
-                              fontSize: 13,
-                            )
-                        ),
-                        if (diszitoertek['tavasz'].toString().contains("virág")) ...[
-                          Image.asset(
-                              "assets/images/virag.png",
-                              height: 15
-                          )
-                        ],
-                        if (diszitoertek['tavasz'].toString().contains("lomb")) ...[
-                          Image.asset(
-                              "assets/images/level.png",
-                              height: 15
-                          )
-                        ],
-                        if (diszitoertek['tavasz'].toString().contains("termés")) ...[
-                          Image.asset(
-                              "assets/images/termes.png",
-                              height: 15
-                          )
-                        ],
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        const Text(
-                            "Nyár:",
-                            style: TextStyle(
-                              fontSize: 13,
-                            )
-                        ),
-                        if (diszitoertek['nyar'].toString().contains("virág")) ...[
-                          Image.asset(
-                              "assets/images/virag.png",
-                              height: 15
-                          )
-                        ],
-                        if (diszitoertek['nyar'].toString().contains("lomb")) ...[
-                          Image.asset(
-                              "assets/images/level.png",
-                              height: 15
-                          )
-                        ],
-                        if (diszitoertek['nyar'].toString().contains("termés")) ...[
-                          Image.asset(
-                              "assets/images/termes.png",
-                              height: 15
-                          )
-                        ],
-                      ],
-                    )
+            children: [
+              Expanded(
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          const Text(
+                              "Tavasz:",
+                              style: TextStyle(
+                                fontSize: 13,
+                              )
+                          ),
+                          if (diszitoertek['tavasz'].contains("virag")) ...[
+                    Image.asset("assets/images/virag.png", height: 15)
                   ],
-                )
-            ),
-            Expanded(
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        const Text(
-                            "Ősz:",
-                            style: TextStyle(
-                              fontSize: 13,
-                            )
-                        ),
-                        if (diszitoertek['osz'].toString().contains("virág")) ...[
-                          Image.asset(
-                              "assets/images/virag.png",
-                              height: 15
-                          )
-                        ],
-                        if (diszitoertek['osz'].toString().contains("lomb")) ...[
-                          Image.asset(
-                              "assets/images/level.png",
-                              height: 15
-                          )
-                        ],
-                        if (diszitoertek['osz'].toString().contains("termés")) ...[
-                          Image.asset(
-                              "assets/images/termes.png",
-                              height: 15
-                          )
-                        ],
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        const Text(
-                            "Tél:",
-                            style: TextStyle(
-                              fontSize: 13,
-                            )
-                        ),
-                        if (diszitoertek['tel'].toString().contains("virág")) ...[
-                          Image.asset(
-                              "assets/images/virag.png",
-                              height: 15
-                          )
-                        ],
-                        if (diszitoertek['tel'].toString().contains("lomb")) ...[
-                          Image.asset(
-                              "assets/images/level.png",
-                              height: 15
-                          )
-                        ],
-                        if (diszitoertek['tel'].toString().contains("termés")) ...[
-                          Image.asset(
-                              "assets/images/termes.png",
-                              height: 15
-                          )
-                        ],
-                      ],
-                    ),
+                          if (diszitoertek['tavasz'].contains("lomb")) ...[
+                    Image.asset("assets/images/level.png", height: 15)
                   ],
-                )
-            ),
-          ]
+                          if (diszitoertek['tavasz'].contains("termes")) ...[
+                    Image.asset("assets/images/termes.png", height: 15)
+                  ],
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          const Text(
+                              "Nyár:",
+                              style: TextStyle(
+                                fontSize: 13,
+                              )
+                          ),
+                          if (diszitoertek['nyar'].contains("virag")) ...[
+                    Image.asset("assets/images/virag.png", height: 15)
+                  ],
+                          if (diszitoertek['nyar'].contains("lomb")) ...[
+                    Image.asset("assets/images/level.png", height: 15)
+                  ],
+                          if (diszitoertek['nyar'].contains("termes")) ...[
+                    Image.asset("assets/images/termes.png", height: 15)
+                  ],
+                        ],
+                      )
+                    ],
+                  )
+              ),
+              Expanded(
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          const Text(
+                              "Ősz:",
+                              style: TextStyle(
+                                fontSize: 13,
+                              )
+                          ),
+                          if (diszitoertek['osz'].contains("virag")) ...[
+                    Image.asset("assets/images/virag.png", height: 15)
+                  ],
+                          if (diszitoertek['osz'].contains("lomb")) ...[
+                    Image.asset("assets/images/level.png", height: 15)
+                  ],
+                          if (diszitoertek['osz'].contains("termes")) ...[
+                    Image.asset("assets/images/termes.png", height: 15)
+                  ],
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          const Text(
+                              "Tél:",
+                              style: TextStyle(
+                                fontSize: 13,
+                              )
+                          ),
+                          if (diszitoertek['tel'].contains("virag")) ...[
+                    Image.asset("assets/images/virag.png", height: 15)
+                  ],
+                          if (diszitoertek['tel'].contains("lomb")) ...[
+                    Image.asset("assets/images/level.png", height: 15)
+                  ],
+                          if (diszitoertek['tel'].contains("termes")) ...[
+                    Image.asset("assets/images/termes.png", height: 15)
+                  ],
+                        ],
+                      ),
+                    ],
+                  )
+              ),
+            ]
         ),
       ],
     );
@@ -385,21 +370,15 @@ class Diszitoertek extends StatelessWidget {
 }
 
 class Alkalmazas extends StatelessWidget {
-  const Alkalmazas({
-    required this.alkalmazasString,
-    super.key
-  });
+  const Alkalmazas({required this.alkalmazas, super.key});
 
-  final String alkalmazasString;
+  final List<dynamic> alkalmazas;
 
   @override
   Widget build(BuildContext context) {
-    List<String> alkalmazas = alkalmazasString.split(', ');
-
     return Column(
       children: [
-        const Text(
-            "Alkalmazási lehetőségek:",
+        const Text("Alkalmazási lehetőségek:",
             style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.bold,
@@ -461,10 +440,10 @@ class _JegyzetState extends State<Jegyzet> {
         return Column(
           children: [
             TextFormField(
-              minLines: 5,
-              maxLines: 15,
-              autofocus: true,
-              controller: _controller
+                minLines: 5,
+                maxLines: 15,
+                autofocus: true,
+                controller: _controller
             ),
             ElevatedButton(
                 onPressed: () {
@@ -553,26 +532,26 @@ class _JegyzetState extends State<Jegyzet> {
               ),
             ),
             Expanded(
-              child: ElevatedButton(
-                onPressed: () {
-                  appState.deleteNote(jegyzet.id);
-                  setState(() {
-                    _noteState = NoteState.show;
-                  });
-                },
-                child: const Text("Törlés")
-              )
+                child: ElevatedButton(
+                    onPressed: () {
+                      appState.deleteNote(jegyzet.id);
+                      setState(() {
+                        _noteState = NoteState.show;
+                      });
+                    },
+                    child: const Text("Törlés")
+                )
             ),
             Expanded(
-              child: ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    _noteState = NoteState.modify;
-                    _controller = TextEditingController(text: jegyzet.szoveg);
-                    });
-                  },
-                child: const Text("Szerkesztés")
-              )
+                child: ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        _noteState = NoteState.modify;
+                        _controller = TextEditingController(text: jegyzet.szoveg);
+                      });
+                    },
+                    child: const Text("Szerkesztés")
+                )
             )
           ],
         )

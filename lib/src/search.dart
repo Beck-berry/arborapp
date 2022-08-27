@@ -11,20 +11,18 @@ class Search extends StatelessWidget {
     super.key
   });
 
-
   @override
   Widget build(BuildContext context) {
     final appState = Provider.of<ApplicationState>(context);
-    List<NovenyAdat> novenyek = appState.novenyek;
+    List<Noveny> novenyek = appState.novenyek;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-        'Keresés',
+        appBar: AppBar(
+          title: const Text(
+            'Keresés',
+          ),
         ),
-      ),
-      body: Column(
-        children: [
+        body: Column(children: [
           Container(
             margin: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
             child: SearchField(
@@ -36,11 +34,13 @@ class Search extends StatelessWidget {
               hint: 'Növény keresése',
               hasOverlay: false,
               onSubmit: (value) {
-                NovenyAdat kivalasztottNoveny = novenyek.where((noveny) => noveny.nev == value).first;
+                Noveny kivalasztottNoveny =
+                    novenyek.where((noveny) => noveny.nev == value).first;
                 Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Plant(noveny: kivalasztottNoveny))
-                );
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            Plant(noveny: kivalasztottNoveny)));
               },
             ),
           ),
@@ -53,12 +53,15 @@ class Search extends StatelessWidget {
                 return ListTile(
                   title: Text(novenyek[index].nev),
                   onTap: () {
-                    NovenyAdat kivalasztottNoveny = novenyek.where((noveny) => noveny.nev == novenyek[index].nev).first;
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Plant(noveny: kivalasztottNoveny))
-                    );
-                  },
+                    Noveny kivalasztottNoveny = novenyek
+                      .where((noveny) => noveny.nev == novenyek[index].nev)
+                      .first;
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              Plant(noveny: kivalasztottNoveny)));
+                },
                 );
               },
             )

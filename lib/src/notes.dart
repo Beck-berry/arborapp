@@ -15,7 +15,7 @@ class Notes extends StatelessWidget {
   Widget build(BuildContext context) {
     final appState = Provider.of<ApplicationState>(context);
     List<JegyzetAdat> jegyzetek = appState.jegyzetek;
-    List<NovenyAdat> novenyek = appState.novenyek;
+    List<Noveny> novenyek = appState.novenyek;
 
     return Scaffold(
         appBar: AppBar(
@@ -23,10 +23,9 @@ class Notes extends StatelessWidget {
             'Keresés',
           ),
         ),
-        body: Column(
-            children: [
-              Container(
-                margin: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
+        body: Column(children: [
+          Container(
+            margin: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
                 child: SearchField(
                   suggestions: jegyzetek.map((j) => SearchFieldListItem(
                       novenyek.where((n) => n.id == j.noveny).first.nev,
@@ -39,12 +38,14 @@ class Notes extends StatelessWidget {
                   hint: 'Jegyzet keresése',
                   hasOverlay: false,
                   onSubmit: (value) {
-                    NovenyAdat kivalasztottNoveny = novenyek.where((noveny) => noveny.nev == value).first;
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Plant(noveny: kivalasztottNoveny))
-                    );
-                  },
+                    Noveny kivalasztottNoveny =
+                    novenyek.where((noveny) => noveny.nev == value).first;
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            Plant(noveny: kivalasztottNoveny)));
+              },
                 ),
               ),
               Text("Keresés ${appState.jegyzetekSzama} jegyzet között..."),
@@ -57,12 +58,15 @@ class Notes extends StatelessWidget {
                         title: Text(novenyek.where((n) => n.id == jegyzetek[index].noveny).first.nev),
                         subtitle: Text("Módosítva: ${jegyzetek[index].modositva.year}.${jegyzetek[index].modositva.month}.${jegyzetek[index].modositva.day}. ${jegyzetek[index].modositva.hour}:${jegyzetek[index].modositva.minute}"),
                         onTap: () {
-                          NovenyAdat kivalasztottNoveny = novenyek.where((noveny) => noveny.id == jegyzetek[index].noveny).first;
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => Plant(noveny: kivalasztottNoveny))
-                          );
-                        },
+                          Noveny kivalasztottNoveny = novenyek
+                      .where((noveny) => noveny.id == jegyzetek[index].noveny)
+                      .first;
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              Plant(noveny: kivalasztottNoveny)));
+                },
                       );
                     },
                   )

@@ -66,35 +66,35 @@ class _ShowMap extends StatelessWidget {
           onPressed: () {
             // TODO jelmagyarázat? vagy valami infó a térképhez
           },
-        backgroundColor: Colors.green,
-        child: const Icon(Icons.navigation),
-      ),
-      body: FlutterMap(
-        options: MapOptions(
-          center: LatLng(47.4804872, 19.0379859),
-          zoom: 16.0,
-          minZoom: 16,
-          maxZoom: 19,
+          backgroundColor: Colors.green,
+          child: const Icon(Icons.navigation),
         ),
-        layers: [
-          TileLayerOptions(
-            minZoom: 16,
-            maxZoom: 19,
-            urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-            subdomains: ['a', 'b', 'c'],
-          ),
-          MarkerLayerOptions(
-              markers: markers
-          ),
-        ],
-        nonRotatedChildren: [
-          AttributionWidget.defaultWidget(
-            source: 'OpenStreetMap contributors',
-            onSourceTapped: null,
-          ),
-        ],
-      )
-    );
+        body: FlutterMap(
+          options: MapOptions(
+              center: LatLng(47.4810700, 19.0393743),
+              zoom: 16.0,
+              minZoom: 16,
+              maxZoom: 19,
+              maxBounds: LatLngBounds(LatLng(47.4753677, 19.0298865),
+                  LatLng(47.4890959, 19.0470638))),
+          layers: [
+            TileLayerOptions(
+                minZoom: 16,
+                maxZoom: 19,
+                urlTemplate:
+                    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                subdomains: ['a', 'b', 'c'],
+                tileBounds: LatLngBounds(LatLng(47.4753677, 19.0298865),
+                    LatLng(47.4890959, 19.0470638))),
+            MarkerLayerOptions(markers: markers),
+          ],
+          nonRotatedChildren: [
+            AttributionWidget.defaultWidget(
+              source: 'OpenStreetMap contributors',
+              onSourceTapped: null,
+            ),
+          ],
+        ));
   }
 }
 

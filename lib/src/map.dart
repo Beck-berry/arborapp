@@ -1,4 +1,6 @@
 import 'package:arborapp/src/enums.dart';
+import 'package:arborapp/src/error.dart';
+import 'package:arborapp/src/load.dart';
 import 'package:arborapp/src/plant.dart';
 import 'package:arborapp/src/types.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -33,10 +35,10 @@ class Terkep extends StatelessWidget {
             AsyncSnapshot<List<NovenyKoordinata>> novenyKoordSnapshot) {
           switch (novenyKoordSnapshot.connectionState) {
             case ConnectionState.waiting:
-              return const Text('Loading....');
+              return const LoadingScreen(cim: 'Térkép');
             default:
               if (novenyKoordSnapshot.hasError) {
-                return Text('Error: ${novenyKoordSnapshot.error}');
+                return ErrorScreen(hiba: novenyKoordSnapshot.error);
               } else {
                 return _ShowMap(novenyek: novenyKoordSnapshot.data);
               }

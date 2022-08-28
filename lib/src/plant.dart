@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'applicationState.dart';
+import 'error.dart';
+import 'load.dart';
 import 'map.dart';
 
 class Plant extends StatelessWidget {
@@ -28,10 +30,10 @@ class Plant extends StatelessWidget {
             AsyncSnapshot<NovenyAdat> novenyAdatSnapshot) {
           switch (novenyAdatSnapshot.connectionState) {
             case ConnectionState.waiting:
-              return const Text('Loading....');
+              return LoadingScreen(cim: noveny.nev);
             default:
               if (novenyAdatSnapshot.hasError) {
-                return Text('Error: ${novenyAdatSnapshot.error}');
+                return ErrorScreen(hiba: novenyAdatSnapshot.error);
               } else {
                 return _ShowNovenyAdat(
                     noveny: noveny, novenyAdat: novenyAdatSnapshot.data);

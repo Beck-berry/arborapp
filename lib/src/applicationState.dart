@@ -80,6 +80,10 @@ class ApplicationState extends ChangeNotifier {
     });
   }
 
+  Noveny getNovenyById(DocumentReference novenyId) {
+    return novenyek.where((n) => n.id == novenyId).single;
+  }
+
   Future<NovenyAdat> getNovenyAdat(DocumentReference novenyId) async {
     var snapshot = await FirebaseFirestore.instance
         .collection('novenyAdat')
@@ -134,6 +138,14 @@ class ApplicationState extends ChangeNotifier {
     });
 
     return koordinatak;
+  }
+
+  Future<List<NovenyKoordinata>> loadNovenyKoordinatak(novenyId) async {
+    if (novenyId == null) {
+      return await initKoordinatak();
+    } else {
+      return await getKoordinatak(novenyId);
+    }
   }
 
   void initJegyzetek() {

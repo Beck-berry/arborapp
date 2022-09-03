@@ -13,24 +13,16 @@ import 'package:provider/provider.dart';
 import 'applicationState.dart';
 
 class Terkep extends StatelessWidget {
-  const Terkep({required this.novenyId, super.key});
+  const Terkep({this.novenyId, super.key});
 
   final DocumentReference? novenyId;
-
-  Future<List<NovenyKoordinata>> loadNovenyKoordinatak(appState) async {
-    if (novenyId == null) {
-      return await appState.initKoordinatak();
-    } else {
-      return await appState.getKoordinatak(novenyId);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     final appState = Provider.of<ApplicationState>(context);
 
     return FutureBuilder<List<NovenyKoordinata>>(
-        future: loadNovenyKoordinatak(appState),
+        future: appState.loadNovenyKoordinatak(novenyId),
         builder: (BuildContext context,
             AsyncSnapshot<List<NovenyKoordinata>> novenyKoordSnapshot) {
           switch (novenyKoordSnapshot.connectionState) {
@@ -54,7 +46,8 @@ class _ShowMap extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Marker> markers = getAllMarkers(novenyek!);
+    final appState = Provider.of<ApplicationState>(context);
+    List<Marker> markers = getAllMarkers(appState, novenyek!);
 
     return Scaffold(
         appBar: AppBar(
@@ -98,32 +91,30 @@ class _ShowMap extends StatelessWidget {
   }
 }
 
-List<Marker> getAllMarkers(List<NovenyKoordinata> novenyek) {
+List<Marker> getAllMarkers(appState, List<NovenyKoordinata> novenyek) {
   List<Marker> allMarkers = [];
 
   for (var n in novenyek) {
+    Noveny noveny = appState.getNovenyById(n.novenyId);
+
     allMarkers.add(Marker(
         point: LatLng(n.coords.latitude, n.coords.longitude),
-        builder: (context) => _MapMarker(n.novenyId)));
+        builder: (context) => _MapMarker(noveny)));
   }
 
   return allMarkers;
 }
 
 class _MapMarker extends StatelessWidget {
-  const _MapMarker(this.novenyId);
+  const _MapMarker(this.noveny);
 
-  final DocumentReference novenyId;
+  final Noveny noveny;
 
   @override
   Widget build(BuildContext context) {
-    final appState = Provider.of<ApplicationState>(context);
-
-    Noveny noveny = appState.novenyek.where((n) => n.id == novenyId).single;
-
     return TextButton(
         onPressed: () {
-          mapMarkerPopup(context, appState, noveny);
+          mapMarkerPopup(context, noveny);
         },
         child: Icon(
           Icons.circle,
@@ -133,7 +124,7 @@ class _MapMarker extends StatelessWidget {
   }
 }
 
-void mapMarkerPopup(BuildContext context, appState, Noveny noveny) {
+void mapMarkerPopup(BuildContext context, Noveny noveny) {
   showDialog<void>(
     context: context,
     builder: (context) {
@@ -156,12 +147,10 @@ void mapMarkerPopup(BuildContext context, appState, Noveny noveny) {
           ElevatedButton(
             onPressed: () {
               Navigator.of(context).pop(); // close popup
-              Noveny kivalasztottNoveny =
-                  appState.novenyek.where((n) => noveny.id == n.id).first;
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => Plant(noveny: kivalasztottNoveny)));
+                      builder: (context) => Plant(noveny: noveny)));
             },
             child: const Text('Megnyitás'),
           ),

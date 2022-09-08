@@ -23,38 +23,48 @@ class _AddPlantState extends State<AddPlant> {
   String magassag = '';
   late double lat;
   late double lon;
-  Map<AlkalmazasLehetoseg, bool?> alkalmazas = <AlkalmazasLehetoseg, bool?>{
+  Map<AlkalmazasLehetoseg, bool> alkalmazas = <AlkalmazasLehetoseg, bool>{
     AlkalmazasLehetoseg.bokorfa: false,
     AlkalmazasLehetoseg.sorfa: false,
     AlkalmazasLehetoseg.parkfa: false
   };
-  Map<Diszitoertek, bool?> diszitoTavasz = <Diszitoertek, bool?>{
-    Diszitoertek.virag: false,
+  Map<Diszitoertek, bool> diszitoTavasz = <Diszitoertek, bool>{
     Diszitoertek.lomb: false,
-    Diszitoertek.kereg: false,
+    Diszitoertek.virag: false,
+    Diszitoertek.termes: false,
     Diszitoertek.level: false,
-    Diszitoertek.termes: false
+    Diszitoertek.kereg: false
   };
-  Map<Diszitoertek, bool?> diszitoNyar = <Diszitoertek, bool?>{
-    Diszitoertek.virag: false,
+  Map<Diszitoertek, bool> diszitoNyar = <Diszitoertek, bool>{
     Diszitoertek.lomb: false,
-    Diszitoertek.kereg: false,
+    Diszitoertek.virag: false,
+    Diszitoertek.termes: false,
     Diszitoertek.level: false,
-    Diszitoertek.termes: false
+    Diszitoertek.kereg: false
   };
-  Map<Diszitoertek, bool?> diszitoOsz = <Diszitoertek, bool?>{
-    Diszitoertek.virag: false,
+  Map<Diszitoertek, bool> diszitoOsz = <Diszitoertek, bool>{
     Diszitoertek.lomb: false,
-    Diszitoertek.kereg: false,
+    Diszitoertek.virag: false,
+    Diszitoertek.termes: false,
     Diszitoertek.level: false,
-    Diszitoertek.termes: false
+    Diszitoertek.kereg: false
   };
-  Map<Diszitoertek, bool?> diszitoTel = <Diszitoertek, bool?>{
-    Diszitoertek.virag: false,
+  Map<Diszitoertek, bool> diszitoTel = <Diszitoertek, bool>{
     Diszitoertek.lomb: false,
-    Diszitoertek.kereg: false,
+    Diszitoertek.virag: false,
+    Diszitoertek.termes: false,
     Diszitoertek.level: false,
-    Diszitoertek.termes: false
+    Diszitoertek.kereg: false
+  };
+  Map<NapfenyIgeny, bool> napfenyIgeny = <NapfenyIgeny, bool>{
+    NapfenyIgeny.napos: false,
+    NapfenyIgeny.fel: false,
+    NapfenyIgeny.arnyek: false
+  };
+  Map<TalajIgeny, bool> talajIgeny = <TalajIgeny, bool>{
+    TalajIgeny.semleges: false,
+    TalajIgeny.meszes: false,
+    TalajIgeny.savanyu: false
   };
 
   Widget _szovegesMezo(String label, String mezo) {
@@ -78,7 +88,7 @@ class _AddPlantState extends State<AddPlant> {
         ));
   }
 
-  Widget _checkboxMezok(MapEntry entry, Map map, String? label) {
+  Widget _checkboxMezo(MapEntry entry, Map map, String? label) {
     return Row(
       children: [
         Checkbox(
@@ -86,7 +96,7 @@ class _AddPlantState extends State<AddPlant> {
           value: entry.value,
           onChanged: (bool? isChecked) {
             setState(() {
-              map.update(entry.key, (value) => isChecked);
+              map.update(entry.key, (value) => isChecked!);
             });
           },
         ),
@@ -181,9 +191,9 @@ class _AddPlantState extends State<AddPlant> {
                         child: Column(
                           children: [
                             const Text("Alkalmazási lehetőségek"),
-                            for (MapEntry<AlkalmazasLehetoseg, bool?> a
+                            for (MapEntry<AlkalmazasLehetoseg, bool> a
                                 in alkalmazas.entries) ...[
-                              _checkboxMezok(a, alkalmazas, a.key.name)
+                              _checkboxMezo(a, alkalmazas, a.key.name)
                             ],
                           ],
                         )),
@@ -203,52 +213,70 @@ class _AddPlantState extends State<AddPlant> {
                                 ]),
                                 TableRow(children: [
                                   TableCell(child: const Text("Tavasz")),
-                                  for (MapEntry<Diszitoertek, bool?> a
+                                  for (MapEntry<Diszitoertek, bool> a
                                       in diszitoTavasz.entries) ...[
                                     TableCell(
-                                        child: _checkboxMezok(
+                                        child: _checkboxMezo(
                                             a, diszitoTavasz, null))
                                   ],
                                 ]),
                                 TableRow(children: [
                                   TableCell(child: const Text("Nyár")),
-                                  for (MapEntry<Diszitoertek, bool?> a
+                                  for (MapEntry<Diszitoertek, bool> a
                                       in diszitoNyar.entries) ...[
                                     TableCell(
-                                        child: _checkboxMezok(
-                                            a, diszitoNyar, null))
+                                        child:
+                                            _checkboxMezo(a, diszitoNyar, null))
                                   ],
                                 ]),
                                 TableRow(children: [
                                   TableCell(child: const Text("Ősz")),
-                                  for (MapEntry<Diszitoertek, bool?> a
+                                  for (MapEntry<Diszitoertek, bool> a
                                       in diszitoOsz.entries) ...[
                                     TableCell(
                                         child:
-                                            _checkboxMezok(a, diszitoOsz, null))
+                                            _checkboxMezo(a, diszitoOsz, null))
                                   ],
                                 ]),
                                 TableRow(children: [
                                   TableCell(child: const Text("Tél")),
-                                  for (MapEntry<Diszitoertek, bool?> a
+                                  for (MapEntry<Diszitoertek, bool> a
                                       in diszitoTel.entries) ...[
                                     TableCell(
                                         child:
-                                            _checkboxMezok(a, diszitoTel, null))
+                                            _checkboxMezo(a, diszitoTel, null))
                                   ],
                                 ])
                               ],
                             ),
                           ],
                         )),
-                    const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 24),
-                        child: Text("Környezeti igények checkbox")),
+                    Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        child: Column(
+                          children: [
+                            Text("Napfényigény"),
+                            for (MapEntry<NapfenyIgeny, bool> a
+                                in napfenyIgeny.entries) ...[
+                              _checkboxMezo(a, napfenyIgeny, a.key.name)
+                            ],
+                          ],
+                        )),
+                    Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        child: Column(
+                          children: [
+                            Text("Talajigény"),
+                            for (MapEntry<TalajIgeny, bool> a
+                                in talajIgeny.entries) ...[
+                              _checkboxMezo(a, talajIgeny, a.key.name)
+                            ],
+                          ],
+                        )),
                     Container(
                         child: ElevatedButton(
                       child: const Text('Hozzáadás'),
                       onPressed: () {
-                        // It returns true if the form is valid, otherwise returns false
                         bool valid = false;
                         valid = _formKey.currentState!.validate();
                         if (valid) {
@@ -267,5 +295,69 @@ class _AddPlantState extends State<AddPlant> {
       'magassag': magassag,
       'szelesseg': szelesseg
     };
+
+    List<String> alkalmazasok = [];
+    alkalmazas.forEach((key, value) {
+      if (value) {
+        alkalmazasok.add(key.toString());
+      }
+    });
+
+    List<String> tavasz = [];
+    diszitoTavasz.forEach((key, value) {
+      if (value) {
+        tavasz.add(key.toString());
+      }
+    });
+
+    List<String> nyar = [];
+    diszitoNyar.forEach((key, value) {
+      if (value) {
+        nyar.add(key.toString());
+      }
+    });
+
+    List<String> osz = [];
+    diszitoOsz.forEach((key, value) {
+      if (value) {
+        osz.add(key.toString());
+      }
+    });
+
+    List<String> tel = [];
+    diszitoTel.forEach((key, value) {
+      if (value) {
+        tel.add(key.toString());
+      }
+    });
+
+    Map<String, List<String>> diszitoertek = <String, List<String>>{
+      "tavasz": tavasz,
+      "nyar": nyar,
+      "osz": osz,
+      "tel": tel
+    };
+
+    List<String> napfenyIgenyList = [];
+    napfenyIgeny.forEach((key, value) {
+      if (value) {
+        napfenyIgenyList.add(key.toString());
+      }
+    });
+
+    List<String> talajList = [];
+    talajIgeny.forEach((key, value) {
+      if (value) {
+        talajList.add(key.toString());
+      }
+    });
+
+    Map<String, List<String>> igenyek = <String, List<String>>{
+      "fenyigeny": napfenyIgenyList,
+      "talaj": talajList
+    };
+
+    appState.saveNoveny(tipus.name, nev, leiras, koords, meretek, alkalmazasok,
+        diszitoertek, igenyek);
   }
 }

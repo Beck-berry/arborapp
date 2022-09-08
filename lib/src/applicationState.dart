@@ -323,4 +323,34 @@ class ApplicationState extends ChangeNotifier {
         .delete();
     initJegyzetek();
   }
+
+  Future<void> saveNoveny(
+      String tipus,
+      String nev,
+      String leiras,
+      GeoPoint koords,
+      Map<String, String> meret,
+      List<String> alkalmazas,
+      Map<String, List<String>> diszitoertek,
+      Map<String, List<String>> igenyek) async {
+    DocumentReference<Map<String, dynamic>> novenyId = await FirebaseFirestore
+        .instance
+        .collection('novenyek')
+        .add(<String, String>{'nev': nev, 'tipus': tipus});
+
+    await FirebaseFirestore.instance
+        .collection('novenyAdat')
+        .add(<String, dynamic>{
+      'noveny_id': novenyId,
+      'leiras': leiras,
+      'meret': meret,
+      'alkalmazas': alkalmazas,
+      'diszitoertek': diszitoertek,
+      'kornyezeti_igeny': igenyek
+    });
+
+    await FirebaseFirestore.instance
+        .collection('koordinata')
+        .add(<String, dynamic>{'noveny_id': novenyId, 'coords': koords});
+  }
 }

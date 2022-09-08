@@ -6,10 +6,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import '../firebase_options.dart';
 
 class ApplicationState extends ChangeNotifier {
+  late String appName;
+  late String packageName;
+  late String version;
+  late String buildNumber;
+
   LoginState _loginState = LoginState.loggedOut;
 
   LoginState get loginState => _loginState;
@@ -49,6 +55,12 @@ class ApplicationState extends ChangeNotifier {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    appName = packageInfo.appName;
+    packageName = packageInfo.packageName;
+    version = packageInfo.version;
+    buildNumber = packageInfo.buildNumber;
 
     initNovenyek();
 

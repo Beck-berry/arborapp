@@ -2,6 +2,8 @@ import 'package:arborapp/src/applicationState.dart';
 import 'package:arborapp/src/enums.dart';
 import 'package:arborapp/src/notes.dart';
 import 'package:flutter/material.dart';
+import 'package:footer/footer.dart';
+import 'package:footer/footer_view.dart';
 import 'package:provider/provider.dart';
 
 import 'src/map.dart';
@@ -24,15 +26,13 @@ class Arborapp extends StatelessWidget {
           theme: ThemeData(
             primarySwatch: Colors.green,
           ),
-          home: const MyHomePage(cim: 'Arborapp'),
+          home: const MyHomePage(),
         ));
   }
 }
 
 class MyHomePage extends StatelessWidget {
-  const MyHomePage({Key? key, required this.cim}) : super(key: key);
-
-  final String cim;
+  const MyHomePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -40,60 +40,66 @@ class MyHomePage extends StatelessWidget {
 
     return Scaffold(
         appBar: AppBar(
-          title: Text(cim),
+          title: Text(appState.appName),
         ),
-        body: Column(children: [
-          const Icon(
-            Icons.forest,
-            size: 100,
-            color: Colors.green,
-          ),
-          Container(
-              margin: const EdgeInsets.symmetric(vertical: 25, horizontal: 18),
-              child: const Text(
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla elementum tempor dolor id varius. Nulla dictum ipsum sit amet elit tincidunt, at iaculis ex condimentum. In hac habitasse platea dictumst. Cras vitae metus aliquet eros ornare egestas id non ipsum. Maecenas lobortis pretium libero, vel scelerisque erat eleifend nec. Nullam rhoncus nisi id justo vehicula efficitur. Quisque erat sapien, maximus a metus non, ullamcorper tincidunt nibh.',
-                textAlign: TextAlign.justify,
-              )),
-          FoMenuButton(
-            cimke: "Barangolás a térképen",
-            ikon: Icons.map,
-            onPress: Consumer<ApplicationState>(
-              builder: (context, appState, _) => const Terkep(),
-            ),
-          ),
-          FoMenuButton(
-            cimke: "Növény keresése",
-            ikon: Icons.search,
-            onPress: Consumer<ApplicationState>(
-              builder: (context, appState, _) => const Search(),
-            ),
-          ),
-          if (appState.loginState == LoginState.loggedIn) ...[
-            FoMenuButton(
-              cimke: "Saját jegyzeteim",
-              ikon: Icons.notes,
-              onPress: Consumer<ApplicationState>(
-                builder: (context, appState, _) => const Notes(),
+        body: FooterView(
+            children: [
+              const Icon(
+                Icons.forest,
+                size: 100,
+                color: Colors.green,
               ),
-            )
-          ],
-          FoMenuButton(
-            cimke: "Profil beállítások",
-            ikon: Icons.face,
-            onPress: Consumer<ApplicationState>(
-                builder: (context, appState, _) => Profile(
-                    loginState: appState.loginState,
-                    startLogin: appState.startLogin,
-                    startRegister: appState.startRegister,
-                    verifyEmail: appState.verifyEmail,
-                    signIn: appState.signIn,
-                    megszakit: appState.megszakit,
-                    register: appState.register,
-                    signOut: appState.signOut,
-                    deleteAcc: appState.deleteAcc,
-                    resetPassword: appState.resetPassword)),
-          ),
-        ]));
+              Container(
+                  margin:
+                      const EdgeInsets.symmetric(vertical: 25, horizontal: 18),
+                  child: const Text(
+                    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla elementum tempor dolor id varius. Nulla dictum ipsum sit amet elit tincidunt, at iaculis ex condimentum. In hac habitasse platea dictumst. Cras vitae metus aliquet eros ornare egestas id non ipsum. Maecenas lobortis pretium libero, vel scelerisque erat eleifend nec. Nullam rhoncus nisi id justo vehicula efficitur. Quisque erat sapien, maximus a metus non, ullamcorper tincidunt nibh.',
+                    textAlign: TextAlign.justify,
+                  )),
+              FoMenuButton(
+                cimke: "Barangolás a térképen",
+                ikon: Icons.map,
+                onPress: Consumer<ApplicationState>(
+                  builder: (context, appState, _) => const Terkep(),
+                ),
+              ),
+              FoMenuButton(
+                cimke: "Növény keresése",
+                ikon: Icons.search,
+                onPress: Consumer<ApplicationState>(
+                  builder: (context, appState, _) => const Search(),
+                ),
+              ),
+              if (appState.loginState == LoginState.loggedIn) ...[
+                FoMenuButton(
+                  cimke: "Saját jegyzeteim",
+                  ikon: Icons.notes,
+                  onPress: Consumer<ApplicationState>(
+                    builder: (context, appState, _) => const Notes(),
+                  ),
+                )
+              ],
+              FoMenuButton(
+                cimke: "Profil beállítások",
+                ikon: Icons.face,
+                onPress: Consumer<ApplicationState>(
+                    builder: (context, appState, _) => Profile(
+                        loginState: appState.loginState,
+                        startLogin: appState.startLogin,
+                        startRegister: appState.startRegister,
+                        verifyEmail: appState.verifyEmail,
+                        signIn: appState.signIn,
+                        megszakit: appState.megszakit,
+                        register: appState.register,
+                        signOut: appState.signOut,
+                        deleteAcc: appState.deleteAcc,
+                        resetPassword: appState.resetPassword)),
+              ),
+            ],
+            footer: Footer(
+              padding: const EdgeInsets.symmetric(vertical: 10.0),
+              child: Text('Verzió: ' + appState.version),
+            )));
   }
 }
 

@@ -41,6 +41,8 @@ dependencies:
   firebase_auth: ^3.4.2
   provider: ^6.0.3
   loading_indicator: ^3.1.0
+  footer: ^0.0.4
+  package_info_plus: ^1.4.3+1
 
 dev_dependencies:
   flutter_test:

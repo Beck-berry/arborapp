@@ -40,20 +40,16 @@ class MyHomePage extends StatelessWidget {
 
     return Scaffold(
         appBar: AppBar(
-          title: Text(appState.appName),
+          title: Text(appState.appName.toUpperCase()),
         ),
         body: FooterView(
             children: [
-              const Icon(
-                Icons.forest,
-                size: 100,
-                color: Colors.green,
-              ),
+              Image.asset('assets/images/logo.png'),
               Container(
-                  margin:
-                      const EdgeInsets.symmetric(vertical: 25, horizontal: 18),
+                  margin: const EdgeInsets.only(
+                      left: 10.0, right: 10.0, bottom: 20.0),
                   child: const Text(
-                    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla elementum tempor dolor id varius. Nulla dictum ipsum sit amet elit tincidunt, at iaculis ex condimentum. In hac habitasse platea dictumst. Cras vitae metus aliquet eros ornare egestas id non ipsum. Maecenas lobortis pretium libero, vel scelerisque erat eleifend nec. Nullam rhoncus nisi id justo vehicula efficitur. Quisque erat sapien, maximus a metus non, ullamcorper tincidunt nibh.',
+                    'Az ARBOR APP egy digitális térképen alapuló rendszer, melynek segítségével megismerhetjük a Budai Arborétum növényállományát. Műholdképen keresztül felülnézetből láthatjuk a kert jelenlegi szerkezetét, melynek legfontosabb elemei a fásszárú taxonok. A térkép jelöli az adott növény helyzetét és tudományos nevét. Az adott növényre kattintva megismerhetjük a taxon jellemzőit. Az általános információátadás mellett, az applikáció célja, hogy a Budai Campus hallgatói már szakmai kérdésekre is választ kapjanak, mint például a taxon ökológiai igényei, szaporítása, alkalmazási lehetőségeit és részletes fenológiai fázisait. Ezen információk jelentősen megkönnyítik, hogy kertészeti és tájépítészeti szempontból is megismerjük a növényeket.',
                     textAlign: TextAlign.justify,
                   )),
               FoMenuButton(

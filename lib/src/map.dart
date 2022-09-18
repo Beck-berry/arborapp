@@ -44,6 +44,42 @@ class _ShowMap extends StatelessWidget {
 
   final List<NovenyKoordinata>? novenyek;
 
+  void jelmagyarazatPopup(BuildContext context) {
+    showDialog<void>(
+      context: context,
+      builder: (context) {
+        return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            child: Container(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(mainAxisSize: MainAxisSize.min, children: [
+                  const Padding(
+                    padding: EdgeInsets.all(10.0),
+                    child: Text(
+                      'Jelmagyarázat',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                      ),
+                    ),
+                  ),
+                  for (NovenyTipus i in NovenyTipus.values) ...[
+                    Row(
+                      children: [
+                        Icon(Icons.circle, color: i.szin),
+                        const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 5.0)),
+                        Text(i.name)
+                      ],
+                    )
+                  ]
+                ])));
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final appState = Provider.of<ApplicationState>(context);
@@ -57,7 +93,7 @@ class _ShowMap extends StatelessWidget {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            // TODO jelmagyarázat? vagy valami infó a térképhez
+            jelmagyarazatPopup(context);
           },
           backgroundColor: Colors.green,
           child: const Icon(Icons.navigation),
@@ -75,7 +111,7 @@ class _ShowMap extends StatelessWidget {
                 minZoom: 16,
                 maxZoom: 19,
                 urlTemplate:
-                    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
                 subdomains: ['a', 'b', 'c'],
                 tileBounds: LatLngBounds(LatLng(47.4753677, 19.0298865),
                     LatLng(47.4890959, 19.0470638))),

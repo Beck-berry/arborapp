@@ -1,14 +1,14 @@
 import 'package:arborapp/src/applicationState.dart';
 import 'package:arborapp/src/enums.dart';
+import 'package:arborapp/src/info.dart';
+import 'package:arborapp/src/map.dart';
 import 'package:arborapp/src/notes.dart';
+import 'package:arborapp/src/profile.dart';
+import 'package:arborapp/src/search.dart';
 import 'package:flutter/material.dart';
 import 'package:footer/footer.dart';
 import 'package:footer/footer_view.dart';
 import 'package:provider/provider.dart';
-
-import 'src/map.dart';
-import 'src/profile.dart';
-import 'src/search.dart';
 
 void main() {
   runApp(const Arborapp());
@@ -52,6 +52,13 @@ class MyHomePage extends StatelessWidget {
                     'Az ARBOR APP egy digitális térképen alapuló rendszer, melynek segítségével megismerhetjük a Budai Arborétum növényállományát. Műholdképen keresztül felülnézetből láthatjuk a kert jelenlegi szerkezetét, melynek legfontosabb elemei a fásszárú taxonok. A térkép jelöli az adott növény helyzetét és tudományos nevét. Az adott növényre kattintva megismerhetjük a taxon jellemzőit. Az általános információátadás mellett, az applikáció célja, hogy a Budai Campus hallgatói már szakmai kérdésekre is választ kapjanak, mint például a taxon ökológiai igényei, szaporítása, alkalmazási lehetőségeit és részletes fenológiai fázisait. Ezen információk jelentősen megkönnyítik, hogy kertészeti és tájépítészeti szempontból is megismerjük a növényeket.',
                     textAlign: TextAlign.justify,
                   )),
+              FoMenuButton(
+                cimke: 'A Budai Arborétumról...',
+                ikon: Icons.question_mark,
+                onPress: Consumer<ApplicationState>(
+                  builder: (context, appState, _) => const Info(),
+                ),
+              ),
               FoMenuButton(
                 cimke: "Barangolás a térképen",
                 ikon: Icons.map,

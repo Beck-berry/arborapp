@@ -1,12 +1,21 @@
 import 'package:arborapp/src/enums.dart';
+import 'package:azlistview/azlistview.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Noveny {
-  Noveny({required this.id, required this.nev, required this.tipus});
+class Noveny extends ISuspensionBean {
+  Noveny(
+      {required this.id,
+      required this.nev,
+      required this.tipus,
+      required this.alphabetIndex});
 
   final DocumentReference id;
   final String nev;
   final NovenyTipus tipus;
+  final int alphabetIndex;
+
+  @override
+  String getSuspensionTag() => alphabetIndex.toString();
 }
 
 class NovenyAdat {

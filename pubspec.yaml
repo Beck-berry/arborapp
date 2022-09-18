@@ -43,6 +43,7 @@ dependencies:
   loading_indicator: ^3.1.0
   footer: ^0.0.4
   package_info_plus: ^1.4.3+1
+  azlistview: ^2.0.0
 
 dev_dependencies:
   flutter_test:

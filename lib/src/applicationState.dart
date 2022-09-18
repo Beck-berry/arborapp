@@ -101,13 +101,14 @@ class ApplicationState extends ChangeNotifier {
         .listen((snapshot) {
       _novenyek = [];
       _novenyekSzama = snapshot.docs.length;
+      int index = 0;
       for (final document in snapshot.docs) {
-        _novenyek.add(
-          Noveny(
-              id: document.reference,
-              nev: document.data()['nev'] as String,
-              tipus: NovenyTipus.values.byName(document.data()['tipus'])),
-        );
+        _novenyek.add(Noveny(
+            id: document.reference,
+            nev: document.data()['nev'] as String,
+            tipus: NovenyTipus.values.byName(document.data()['tipus']),
+            alphabetIndex: index));
+        index++;
       }
     });
   }

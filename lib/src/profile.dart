@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 
 import 'enums.dart';
 import 'notes.dart';
@@ -103,46 +103,44 @@ class Profile extends StatelessWidget {
         return base(
           Column(
             children: [
-              const Text("Miért jó, ha van fiókod?"),
+            const Text('Miért jó, ha van fiókod?'),
+            ElevatedButton.icon(
+                label: const Text('Új vagyok!'),
+                icon: const Icon(Icons.add, size: 20),
+                style: ElevatedButton.styleFrom(
+                  fixedSize: const Size(300, 30),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                ),
+                onPressed: () {
+                  startRegister();
+                }),
               ElevatedButton.icon(
-                  label: const Text("Új vagyok!"),
-                  icon: const Icon(Icons.add, size: 20),
-                  style: ElevatedButton.styleFrom(
-                    fixedSize: const Size(300, 30),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                  ),
-                  onPressed: () {
-                    startRegister();
-                  }
-              ),
-              ElevatedButton.icon(
-                  label: const Text("Már tag vagyok!"),
-                  icon: const Icon(Icons.login, size: 20),
-                  style: ElevatedButton.styleFrom(
-                    fixedSize: const Size(300, 30),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                  ),
-                  onPressed: () {
-                    startLogin();
-                  }
-              ),
-            ],
-          )
-        );
+                  label: const Text('Már tag vagyok!'),
+                icon: const Icon(Icons.login, size: 20),
+                style: ElevatedButton.styleFrom(
+                  fixedSize: const Size(300, 30),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                ),
+                onPressed: () {
+                  startLogin();
+                }),
+          ],
+        ));
       case LoginState.login:
-        String _email = "";
-        String _pswd = "";
+        String _email = '';
+        String _pswd = '';
 
-        return base(
-          Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Form(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Padding(
+        return base(Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Form(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 24),
                         child: TextFormField(
                           decoration: const InputDecoration(
@@ -183,15 +181,22 @@ class Profile extends StatelessWidget {
                         vertical: 16.0, horizontal: 30),
                     child: ElevatedButton(
                       onPressed: () {
-                        if (_email != "") {
-                          verifyEmail(_email, (e) => _showHibaUzenet(context,
-                              'Ehhez az e-mail címhez nem tartozik felhasználó.', e));
-                        }
-                        if (_email != "" && _pswd != "") {
-                          signIn(_email, _pswd, (e) =>
-                              _showHibaUzenet(context, 'Sikertelen bejelentkezés', e));
-                        }
-                      },
+                        if (_email != '') {
+                        verifyEmail(
+                            _email,
+                            (e) => _showHibaUzenet(
+                                context,
+                                'Ehhez az e-mail címhez nem tartozik felhasználó.',
+                                e));
+                      }
+                      if (_email != '' && _pswd != '') {
+                        signIn(
+                            _email,
+                            _pswd,
+                            (e) => _showHibaUzenet(
+                                context, 'Sikertelen bejelentkezés', e));
+                      }
+                    },
                       child: const Text('Belépek'),
                     ),
                   ),
@@ -201,31 +206,29 @@ class Profile extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: () {
                         megszakit();
-                      },
-                      child: const Text('Vissza'),
-                    ),
+                    },
+                    child: const Text('Vissza'),
                   ),
-                ],
-              ),
-            ],
-          )
-        );
+                ),
+              ],
+            ),
+          ],
+        ));
       case LoginState.register:
-        String _email = "";
-        String _nickname = "";
-        String _pswd1 = "";
-        String _pswd2 = "";
+        String _email = '';
+        String _nickname = '';
+        String _pswd1 = '';
+        String _pswd2 = '';
 
-        return base(
-          Column(
-            children: [
-              Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Form(
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Padding(
+        return base(Column(
+          children: [
+            Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Form(
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                      Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 24),
                                 child: TextFormField(
                                   decoration: const InputDecoration(
@@ -270,33 +273,43 @@ class Profile extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 16.0, horizontal: 30),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        if (_pswd1 == "" || _pswd2 == "" || _pswd1 != _pswd2) {
-                          _showHibaUzenet(context, "Hibás jelszó", Exception("A beírt jelszavak nem egyeznek, próbáld újra!"));
-                        } else if (_email == "") {
-                          _showHibaUzenet(context, "Hibás e-mail", Exception("E-mail cím megadása kötelező!"));
-                        } else if (_nickname == "") {
-                          _showHibaUzenet(context, "Hibás felhasználónév", Exception("Felhasználónév megadása kötelező!"));
-                        } else {
-                          register(_email, _nickname, _pswd1,
-                                  (e) => _showHibaUzenet(context, "Sikertelen regisztráció", e));
-                        }
-                      },
-                      child: const Text('Regisztrálok'),
-                    ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 16.0, horizontal: 30),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      megszakit();
+                    },
+                    child: const Text('Vissza'),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 16.0, horizontal: 30),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        megszakit();
-                      },
-                      child: const Text('Vissza'),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 16.0, horizontal: 30),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (_pswd1 == '' || _pswd2 == '' || _pswd1 != _pswd2) {
+                        _showHibaUzenet(
+                            context,
+                            'Hibás jelszó',
+                            Exception(
+                                'A beírt jelszavak nem egyeznek, próbáld újra!'));
+                      } else if (_email == '') {
+                        _showHibaUzenet(context, 'Hibás e-mail',
+                            Exception('E-mail cím megadása kötelező!'));
+                      } else if (_nickname == '') {
+                        _showHibaUzenet(context, 'Hibás felhasználónév',
+                            Exception('Felhasználónév megadása kötelező!'));
+                      } else {
+                        register(
+                            _email,
+                            _nickname,
+                            _pswd1,
+                            (e) => _showHibaUzenet(
+                                context, 'Sikertelen regisztráció', e));
+                      }
+                    },
+                      child: const Text('Regisztrálok'),
                     ),
                   ),
                 ],
@@ -354,19 +367,17 @@ class Profile extends StatelessWidget {
                 margin: const EdgeInsets.symmetric(vertical: 5.0),
                 child: ElevatedButton.icon(
                   onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const Notes())
-                    );
-                  },
-                  icon: const Icon(Icons.notes, size: 20),
-                  label: const Text("Jegyzeteim"),
-                  style: ElevatedButton.styleFrom(
-                      primary: Colors.green,
-                      minimumSize: const Size.fromHeight(50),
-                      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0)))
-                  ),
-                ),
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => const Notes()));
+                },
+                icon: const Icon(Icons.notes, size: 20),
+                label: const Text('Jegyzeteim'),
+                style: ElevatedButton.styleFrom(
+                    primary: Colors.green,
+                    minimumSize: const Size.fromHeight(50),
+                    shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(12.0)))),
+              ),
               ),
               /*Container(
                 margin: const EdgeInsets.symmetric(vertical: 5.0),
@@ -380,31 +391,32 @@ class Profile extends StatelessWidget {
                       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0)))
                   ),
                 )
-              ),*/
+              ),
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 5.0),
                 child: ElevatedButton.icon(
                   onPressed: () {}, // TODO jelszómódosító form
                   icon: const Icon(Icons.edit, size: 20),
-                  label: const Text("Jelszó megváltoztatása"),
+                  label: const Text('Jelszó megváltoztatása'),
                   style: ElevatedButton.styleFrom(
                       primary: Colors.green,
                       minimumSize: const Size.fromHeight(50),
                       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0)))
                   ),
                 )
-              ),
-              Container(
+              ),*/
+            Container(
                 margin: const EdgeInsets.symmetric(vertical: 5.0),
                 child: ElevatedButton.icon(
                   onPressed: signOut,
                   icon: const Icon(Icons.logout, size: 20),
-                  label: const Text("Kijelentkezés"),
+                  label: const Text('Kijelentkezés'),
                   style: ElevatedButton.styleFrom(
                       primary: Colors.green,
                       minimumSize: const Size.fromHeight(50),
-                      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0)))
-                  ),
+                      shape: const RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(12.0)))),
                 )
               ),
               Container(
@@ -416,13 +428,13 @@ class Profile extends StatelessWidget {
                         builder: (context) {
                           return AlertDialog(
                             title: const Text(
-                              "Regisztráció törlése",
-                              style: TextStyle(fontSize: 18),
-                            ),
+                              'Regisztráció törlése',
+                            style: TextStyle(fontSize: 18),
+                          ),
                             content: const Text(
-                              "Biztosan törölni szeretnéd a fiókodat az alkalmazásból? A hozzátartozó adatok el fognak veszni.",
-                              style: TextStyle(fontSize: 13),
-                            ),
+                              'Biztosan törölni szeretnéd a fiókodat az alkalmazásból? A hozzátartozó adatok el fognak veszni.',
+                            style: TextStyle(fontSize: 13),
+                          ),
                             actions: <Widget>[
                               ElevatedButton(
                                 onPressed: () {
@@ -433,29 +445,31 @@ class Profile extends StatelessWidget {
                               ElevatedButton(
                                 onPressed: () {
                                   deleteAcc((e) => _showHibaUzenet(context,
-                                  'Hiba történt a felhasználó törlése közben.', e));
-                                },
-                                child: const Text('Igen'),
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    },
-                    icon: const Icon(Icons.delete, size: 20),
-                    label: const Text("Regisztráció törlése"),
-                    style: ElevatedButton.styleFrom(
-                        primary: Colors.redAccent,
-                        minimumSize: const Size.fromHeight(50),
-                        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0)))
-                    ),
-                  )
+                                    'Hiba történt a felhasználó törlése közben.',
+                                    e));
+                              },
+                              child: const Text('Igen'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                  icon: const Icon(Icons.delete, size: 20),
+                  label: const Text('Regisztráció törlése'),
+                  style: ElevatedButton.styleFrom(
+                      primary: Colors.redAccent,
+                      minimumSize: const Size.fromHeight(50),
+                      shape: const RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(12.0)))),
+                )
               )
             ]
           ),
         );
       default:
-        return base(const Text("Valami elromlott :("));
+        return base(const Text('Valami elromlott :('));
     }
   }
 }

@@ -80,9 +80,6 @@ class _ShowNovenyAdat extends StatelessWidget {
                       ))
                 ],
               )),
-              const Divider(
-                color: Colors.grey,
-              ),
               Meret(meret: novenyAdat!.meret),
               KornyezetiIgenyek(igenyek: novenyAdat!.igenyek),
               Diszitoertek(diszitoertek: novenyAdat!.diszitoertek),
@@ -110,7 +107,7 @@ class _ShowNovenyAdat extends StatelessWidget {
                         );
                       });
                 },
-                child: const Text("További képek megtekintése"),
+                child: const Text('További képek megtekintése'),
               ),
               OutlinedButton(
                   onPressed: () {
@@ -119,21 +116,31 @@ class _ShowNovenyAdat extends StatelessWidget {
                         MaterialPageRoute(
                             builder: (context) => Terkep(novenyId: noveny.id)));
                   },
-                  child: const Text("Mutasd a térképen!")),
-              const Divider(
-                color: Colors.grey,
-              ),
+                  child: const Text('Mutasd a térképen!')),
               Jegyzet(novenyId: noveny.id)
-            ])
-    );
+            ]));
   }
 }
 
+Widget _alCim(String cim) {
+  return Container(
+    color: Colors.green,
+    width: double.maxFinite,
+    padding: const EdgeInsets.all(5.0),
+    margin: const EdgeInsets.symmetric(vertical: 10.0),
+    child: Text(
+      cim,
+      style: const TextStyle(
+        fontSize: 13,
+        fontWeight: FontWeight.bold,
+        color: Colors.white,
+      ),
+    ),
+  );
+}
+
 class Meret extends StatelessWidget {
-  const Meret({
-    required this.meret,
-    super.key
-  });
+  const Meret({required this.meret, super.key});
 
   final Map<String, dynamic> meret;
 
@@ -141,11 +148,7 @@ class Meret extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const Text("Méret:",
-            style: TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.bold,
-            )),
+        _alCim('Méret és élettartam'),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -209,18 +212,14 @@ class KornyezetiIgenyek extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const Text("Környezeti igény:",
-            style: TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.bold,
-            )),
+        _alCim('Környezeti igények'),
         Row(
           children: [
-            if (igenyek['fenyigeny'].contains("napos")) ...[
-              Image.asset("assets/images/napos.png", height: 35)
+            if (igenyek['fenyigeny'].contains('napos')) ...[
+              Image.asset('assets/images/napos.png', height: 35)
             ],
-            if (igenyek['fenyigeny'].contains("felarnyekos")) ...[
-              Image.asset("assets/images/felarnyekos.png", height: 35)
+            if (igenyek['fenyigeny'].contains('felarnyekos')) ...[
+              Image.asset('assets/images/felarnyekos.png', height: 35)
             ],
           ],
         ),
@@ -243,14 +242,14 @@ class Diszitoertek extends StatelessWidget {
   Widget showLista(List<dynamic> evszak) {
     return Row(
       children: [
-        if (evszak.contains("virag")) ...[
-          Image.asset("assets/images/virag.png", height: 15)
+        if (evszak.contains('virag')) ...[
+          Image.asset('assets/images/virag.png', height: 15)
         ],
-        if (evszak.contains("lomb")) ...[
-          Image.asset("assets/images/level.png", height: 15)
+        if (evszak.contains('lomb')) ...[
+          Image.asset('assets/images/level.png', height: 15)
         ],
-        if (evszak.contains("termes")) ...[
-          Image.asset("assets/images/termes.png", height: 15)
+        if (evszak.contains('termes')) ...[
+          Image.asset('assets/images/termes.png', height: 15)
         ],
       ],
     );
@@ -260,18 +259,14 @@ class Diszitoertek extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const Text("Díszítőérték:",
-            style: TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.bold,
-            )),
+        _alCim('Díszítőérték'),
         Row(children: [
           Expanded(
               child: Column(
             children: [
               Row(
                 children: [
-                  const Text("Tavasz:",
+                  const Text('Tavasz:',
                       style: TextStyle(
                         fontSize: 13,
                       )),
@@ -280,7 +275,7 @@ class Diszitoertek extends StatelessWidget {
               ),
               Row(
                 children: [
-                  const Text("Nyár:",
+                  const Text('Nyár:',
                       style: TextStyle(
                         fontSize: 13,
                       )),
@@ -294,7 +289,7 @@ class Diszitoertek extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  const Text("Ősz:",
+                  const Text('Ősz:',
                       style: TextStyle(
                         fontSize: 13,
                       )),
@@ -303,7 +298,7 @@ class Diszitoertek extends StatelessWidget {
               ),
               Row(
                 children: [
-                  const Text("Tél:",
+                  const Text('Tél:',
                       style: TextStyle(
                         fontSize: 13,
                       )),
@@ -327,15 +322,11 @@ class Alkalmazas extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const Text("Alkalmazási lehetőségek:",
-            style: TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.bold,
-            )),
+        _alCim('Alkalmazási lehetőségek'),
         Row(
           children: [
-            const Text("|| "),
-            for (String a in alkalmazas) ...[Text(a + " || ")]
+            const Text('|| '),
+            for (String a in alkalmazas) ...[Text(a + ' || ')]
           ],
         )
       ],
@@ -380,7 +371,7 @@ class _JegyzetState extends State<Jegyzet> {
               });
               _controller = TextEditingController();
             },
-            child: const Text("Jegyzet írása"));
+            child: const Text('Jegyzet írása'));
       } else if (_noteState == NoteState.write) {
         return Column(
           children: [
@@ -395,7 +386,7 @@ class _JegyzetState extends State<Jegyzet> {
                     _noteState = NoteState.show;
                   });
                 },
-                child: const Text("Mégsem")),
+                child: const Text('Mégsem')),
             ElevatedButton(
                 onPressed: () {
                   appState.saveNote(widget.novenyId, _controller.value.text);
@@ -404,7 +395,7 @@ class _JegyzetState extends State<Jegyzet> {
                     _noteState = NoteState.show;
                   });
                 },
-                child: const Text("Mentés"))
+                child: const Text('Mentés'))
           ],
         );
       }
@@ -425,7 +416,7 @@ class _JegyzetState extends State<Jegyzet> {
                 });
                 _controller.clear();
               },
-              child: const Text("Mentés"))
+              child: const Text('Mentés'))
         ],
       );
     }
@@ -433,7 +424,7 @@ class _JegyzetState extends State<Jegyzet> {
     return Column(
       children: [
         const Text(
-          "Saját feljegyzések",
+          'Saját feljegyzések',
           style: TextStyle(
             decoration: TextDecoration.underline,
             fontSize: 15,
@@ -453,13 +444,13 @@ class _JegyzetState extends State<Jegyzet> {
               child: Column(
                 children: [
                   const Text(
-                    "Módosítva:",
+                    'Módosítva:',
                     style: TextStyle(
                       fontSize: 11,
                     ),
                   ),
                   Text(
-                    "${jegyzet.modositva.year}.${jegyzet.modositva.month}.${jegyzet.modositva.day}. ${jegyzet.modositva.hour}:${jegyzet.modositva.minute}",
+                    '${jegyzet.modositva.year}.${jegyzet.modositva.month}.${jegyzet.modositva.day}. ${jegyzet.modositva.hour}:${jegyzet.modositva.minute}',
                     style: const TextStyle(
                       fontSize: 10,
                     ),
@@ -475,7 +466,7 @@ class _JegyzetState extends State<Jegyzet> {
                         _noteState = NoteState.show;
                       });
                     },
-                    child: const Text("Törlés"))),
+                    child: const Text('Törlés'))),
             Expanded(
                 child: ElevatedButton(
                     onPressed: () {
@@ -485,7 +476,7 @@ class _JegyzetState extends State<Jegyzet> {
                             TextEditingController(text: jegyzet.szoveg);
                       });
                     },
-                    child: const Text("Szerkesztés")))
+                    child: const Text('Szerkesztés')))
           ],
         )
       ],

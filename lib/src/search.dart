@@ -63,7 +63,7 @@ class _SearchState extends State<Search> {
             ),
           ),
           Expanded(
-              child: AzListView(
+            child: AzListView(
             data: novenyek,
             itemCount: novenyek.length,
             itemBuilder: (context, index) {

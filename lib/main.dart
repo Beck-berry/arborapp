@@ -60,14 +60,14 @@ class MyHomePage extends StatelessWidget {
                 ),
               ),
               FoMenuButton(
-                cimke: "Barangolás a térképen",
+                cimke: 'Barangolás a térképen',
                 ikon: Icons.map,
                 onPress: Consumer<ApplicationState>(
                   builder: (context, appState, _) => const Terkep(),
                 ),
               ),
               FoMenuButton(
-                cimke: "Növény keresése",
+                cimke: 'Növény keresése',
                 ikon: Icons.search,
                 onPress: Consumer<ApplicationState>(
                   builder: (context, appState, _) => const Search(),
@@ -75,7 +75,7 @@ class MyHomePage extends StatelessWidget {
               ),
               if (appState.loginState == LoginState.loggedIn) ...[
                 FoMenuButton(
-                  cimke: "Saját jegyzeteim",
+                  cimke: 'Saját jegyzeteim',
                   ikon: Icons.notes,
                   onPress: Consumer<ApplicationState>(
                     builder: (context, appState, _) => const Notes(),
@@ -83,7 +83,7 @@ class MyHomePage extends StatelessWidget {
                 )
               ],
               FoMenuButton(
-                cimke: "Profil beállítások",
+                cimke: 'Profil beállítások',
                 ikon: Icons.face,
                 onPress: Consumer<ApplicationState>(
                     builder: (context, appState, _) => Profile(
@@ -120,12 +120,13 @@ class FoMenuButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 5.0),
       child: ElevatedButton.icon(
           label: Text(cimke),
           icon: Icon(ikon, size: 20),
           style: ElevatedButton.styleFrom(
-            fixedSize: const Size(300, 30),
+            minimumSize: const Size.fromHeight(40),
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           ),

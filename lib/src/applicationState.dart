@@ -24,7 +24,7 @@ class ApplicationState extends ChangeNotifier {
 
   String? get currentUser => _currentUser;
 
-  late bool _isAdmin;
+  bool _isAdmin = false;
 
   bool get isAdmin => _isAdmin;
 
@@ -45,6 +45,7 @@ class ApplicationState extends ChangeNotifier {
   int get jegyzetekSzama => _jegyzetekSzama;
 
   NoteState _noteState = NoteState.show;
+
   NoteState get noteState => _noteState;
 
   ApplicationState() {
@@ -68,7 +69,17 @@ class ApplicationState extends ChangeNotifier {
       if (user != null) {
         _loginState = LoginState.loggedIn;
         _currentUser = user.uid;
-        isCurrentUserAdmin();
+        FirebaseFirestore.instance
+            .collection('admin')
+            .snapshots()
+            .listen((snapshot) {
+          for (final document in snapshot.docs) {
+            _isAdmin = document.data()['userId'] == _currentUser;
+            if (_isAdmin) {
+              break;
+            }
+          }
+        });
         initJegyzetek();
       } else {
         _loginState = LoginState.loggedOut;
@@ -76,20 +87,6 @@ class ApplicationState extends ChangeNotifier {
         _isAdmin = false;
       }
       notifyListeners();
-    });
-  }
-
-  void isCurrentUserAdmin() async {
-    FirebaseFirestore.instance
-        .collection('admin')
-        .snapshots()
-        .listen((snapshot) {
-      for (final document in snapshot.docs) {
-        _isAdmin = document.data()['userId'] == _currentUser;
-        if (_isAdmin) {
-          break;
-        }
-      }
     });
   }
 

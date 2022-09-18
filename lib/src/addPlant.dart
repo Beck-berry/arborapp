@@ -105,6 +105,16 @@ class _AddPlantState extends State<AddPlant> {
     );
   }
 
+  Widget kisCim(String cim) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
+      alignment: Alignment.center,
+      color: Colors.green,
+      child:
+          Text(cim, style: const TextStyle(color: Colors.white, fontSize: 15)),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final appState = Provider.of<ApplicationState>(context);
@@ -121,12 +131,16 @@ class _AddPlantState extends State<AddPlant> {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    _szovegesMezo('Latin név', nev),
                     Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: kisCim('Alapadatok')),
+                    _szovegesMezo('Latin név', nev, false),
+                    Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Row(
                           children: [
-                            const Text("Típus: "),
+                            const Text('Típus:'),
+                            const Padding(padding: EdgeInsets.all(10.0)),
                             DropdownButton(
                               value: tipus,
                               items: NovenyTipus.values
@@ -141,56 +155,56 @@ class _AddPlantState extends State<AddPlant> {
                             )
                           ],
                         )),
-                    _szovegesMezo('Leírás', leiras),
+                    _szovegesMezo('Leírás', leiras, false),
                     Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 24),
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              const Text("Koordináták:"),
-                              TextFormField(
-                                decoration: const InputDecoration(
-                                    labelText: 'lat',
-                                    constraints: BoxConstraints(maxWidth: 100)),
-                                keyboardType: TextInputType.number,
-                                onChanged: (value) => {
-                                  setState(() {
-                                    lat = double.parse(value);
-                                  })
-                                },
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'A mező kitöltése kötelező!';
-                                  }
-                                  return null;
-                                },
-                              ),
-                              TextFormField(
-                                decoration: const InputDecoration(
-                                    labelText: 'lon',
-                                    constraints: BoxConstraints(maxWidth: 100)),
-                                keyboardType: TextInputType.number,
-                                onChanged: (value) => {
-                                  setState(() {
-                                    lon = double.parse(value);
-                                  })
-                                },
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'A mező kitöltése kötelező!';
-                                  }
-                                  return null;
-                                },
-                              )
-                            ])),
-                    _szovegesMezo('Élettartam', ido),
-                    _szovegesMezo('Szélesség', szelesseg),
-                    _szovegesMezo('Magasság', magassag),
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Row(children: [
+                          const Text('Koordináták:'),
+                          const Padding(padding: EdgeInsets.all(10.0)),
+                          TextFormField(
+                            decoration: const InputDecoration(
+                                labelText: 'lat',
+                                constraints: BoxConstraints(maxWidth: 100)),
+                            keyboardType: TextInputType.number,
+                            onChanged: (value) => {
+                              setState(() {
+                                lat = double.parse(value);
+                              })
+                            },
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'A mező kitöltése kötelező!';
+                              }
+                              return null;
+                            },
+                          ),
+                          const Padding(padding: EdgeInsets.all(10.0)),
+                          TextFormField(
+                            decoration: const InputDecoration(
+                                labelText: 'lon',
+                                constraints: BoxConstraints(maxWidth: 100)),
+                            keyboardType: TextInputType.number,
+                            onChanged: (value) => {
+                              setState(() {
+                                lon = double.parse(value);
+                              })
+                            },
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'A mező kitöltése kötelező!';
+                              }
+                              return null;
+                            },
+                          )
+                        ])),
+                    _szovegesMezo('Élettartam', ido, true),
+                    _szovegesMezo('Szélesség', szelesseg, true),
+                    _szovegesMezo('Magasság', magassag, true),
                     Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Column(
                           children: [
-                            const Text("Alkalmazási lehetőségek"),
+                            kisCim('Alkalmazási lehetőségek'),
                             for (MapEntry<AlkalmazasLehetoseg, bool> a
                                 in alkalmazas.entries) ...[
                               _checkboxMezo(a, alkalmazas, a.key.name)
@@ -198,21 +212,21 @@ class _AddPlantState extends State<AddPlant> {
                           ],
                         )),
                     Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Column(
                           children: [
-                            Text("Díszítőértékek"),
+                            kisCim('Díszítőértékek'),
                             Table(
                               children: [
                                 TableRow(children: [
-                                  TableCell(child: const Text("")),
+                                  const TableCell(child: Text('')),
                                   for (Diszitoertek e
                                       in Diszitoertek.values) ...[
                                     TableCell(child: Text(e.name))
                                   ],
                                 ]),
                                 TableRow(children: [
-                                  TableCell(child: const Text("Tavasz")),
+                                  const TableCell(child: Text('Tavasz')),
                                   for (MapEntry<Diszitoertek, bool> a
                                       in diszitoTavasz.entries) ...[
                                     TableCell(
@@ -221,7 +235,7 @@ class _AddPlantState extends State<AddPlant> {
                                   ],
                                 ]),
                                 TableRow(children: [
-                                  TableCell(child: const Text("Nyár")),
+                                  const TableCell(child: Text('Nyár')),
                                   for (MapEntry<Diszitoertek, bool> a
                                       in diszitoNyar.entries) ...[
                                     TableCell(
@@ -230,7 +244,7 @@ class _AddPlantState extends State<AddPlant> {
                                   ],
                                 ]),
                                 TableRow(children: [
-                                  TableCell(child: const Text("Ősz")),
+                                  const TableCell(child: Text('Ősz')),
                                   for (MapEntry<Diszitoertek, bool> a
                                       in diszitoOsz.entries) ...[
                                     TableCell(
@@ -239,7 +253,7 @@ class _AddPlantState extends State<AddPlant> {
                                   ],
                                 ]),
                                 TableRow(children: [
-                                  TableCell(child: const Text("Tél")),
+                                  const TableCell(child: Text('Tél')),
                                   for (MapEntry<Diszitoertek, bool> a
                                       in diszitoTel.entries) ...[
                                     TableCell(
@@ -252,10 +266,10 @@ class _AddPlantState extends State<AddPlant> {
                           ],
                         )),
                     Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Column(
                           children: [
-                            Text("Napfényigény"),
+                            kisCim('Napfényigény'),
                             for (MapEntry<NapfenyIgeny, bool> a
                                 in napfenyIgeny.entries) ...[
                               _checkboxMezo(a, napfenyIgeny, a.key.name)
@@ -263,27 +277,33 @@ class _AddPlantState extends State<AddPlant> {
                           ],
                         )),
                     Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Column(
                           children: [
-                            Text("Talajigény"),
+                            kisCim('Talajigény'),
                             for (MapEntry<TalajIgeny, bool> a
                                 in talajIgeny.entries) ...[
                               _checkboxMezo(a, talajIgeny, a.key.name)
                             ],
                           ],
                         )),
-                    Container(
-                        child: ElevatedButton(
-                      child: const Text('Hozzáadás'),
-                      onPressed: () {
-                        bool valid = false;
-                        valid = _formKey.currentState!.validate();
-                        if (valid) {
-                          savePlant(appState);
-                        }
-                      },
-                    )),
+                    Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            ElevatedButton(
+                              child: const Text('Mentés'),
+                              onPressed: () {
+                                bool valid = false;
+                                valid = _formKey.currentState!.validate();
+                                if (valid) {
+                                  savePlant(appState, widget.noveny);
+                                }
+                              },
+                            ),
+                          ],
+                        ))
                   ]))
         ]));
   }

@@ -1,26 +1,66 @@
 import 'package:arborapp/src/enums.dart';
+import 'package:arborapp/src/load.dart';
+import 'package:arborapp/src/types.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'applicationState.dart';
+import 'error.dart';
 
-class AddPlant extends StatefulWidget {
-  const AddPlant({Key? key}) : super(key: key);
+class AddPlant extends StatelessWidget {
+  const AddPlant({this.noveny, Key? key}) : super(key: key);
+
+  final Noveny? noveny;
 
   @override
-  _AddPlantState createState() => _AddPlantState();
+  Widget build(BuildContext context) {
+    final appState = Provider.of<ApplicationState>(context);
+
+    if (noveny != null) {
+      return FutureBuilder<NovenyAdat>(
+          future: appState.getNovenyAdat(noveny!.id),
+          builder: (BuildContext context,
+              AsyncSnapshot<NovenyAdat> novenyAdatSnapshot) {
+            switch (novenyAdatSnapshot.connectionState) {
+              case ConnectionState.waiting:
+                return const LoadingScreen(cim: 'Növény szerkesztése');
+              default:
+                if (novenyAdatSnapshot.hasError) {
+                  return ErrorScreen(hiba: novenyAdatSnapshot.error);
+                } else {
+                  return _AddPlantForm(
+                      noveny: noveny, novenyAdat: novenyAdatSnapshot.data);
+                }
+            }
+          });
+    }
+
+    return const _AddPlantForm();
+  }
 }
 
-class _AddPlantState extends State<AddPlant> {
+class _AddPlantForm extends StatefulWidget {
+  const _AddPlantForm({this.noveny, this.novenyAdat, Key? key})
+      : super(key: key);
+
+  final Noveny? noveny;
+  final NovenyAdat? novenyAdat;
+
+  @override
+  _AddPlantFormState createState() => _AddPlantFormState();
+}
+
+class _AddPlantFormState extends State<_AddPlantForm> {
   final _formKey = GlobalKey<FormState>();
 
-  String nev = '';
-  NovenyTipus tipus = NovenyTipus.values.first;
-  String leiras = '';
-  String ido = '';
-  String szelesseg = '';
-  String magassag = '';
+  String cim = 'Növény hozzáadása';
+  late String nev;
+  late NovenyTipus tipus;
+  late String leiras;
+  late String ido;
+  late String szelesseg;
+  late String magassag;
   late double lat;
   late double lon;
   Map<AlkalmazasLehetoseg, bool> alkalmazas = <AlkalmazasLehetoseg, bool>{
@@ -67,18 +107,85 @@ class _AddPlantState extends State<AddPlant> {
     TalajIgeny.savanyu: false
   };
 
-  Widget _szovegesMezo(String label, String mezo) {
+  @override
+  void initState() {
+    if (widget.noveny != null && widget.novenyAdat != null) {
+      cim = 'Növény szerkesztése';
+      initNovenyAdatok();
+    } else {
+      nev = '';
+      tipus = NovenyTipus.values.first;
+      leiras = '';
+      ido = '';
+      szelesseg = '';
+      magassag = '';
+    }
+    super.initState();
+  }
+
+  void initNovenyAdatok() {
+    nev = widget.noveny!.nev;
+    leiras = widget.novenyAdat!.leiras;
+    tipus = widget.noveny!.tipus;
+
+    Map<String, dynamic> meretek = widget.novenyAdat!.meret;
+    ido = meretek['ido'];
+    magassag = meretek['magassag'];
+    szelesseg = meretek['szelesseg'];
+
+    Map<String, dynamic> igenyek = widget.novenyAdat!.igenyek;
+    napfenyIgeny[NapfenyIgeny.napos] = igenyek['fenyigeny'].contains('napos');
+    napfenyIgeny[NapfenyIgeny.fel] =
+        igenyek['fenyigeny'].contains('felarnyekos');
+    napfenyIgeny[NapfenyIgeny.arnyek] =
+        igenyek['fenyigeny'].contains('arnyekos');
+
+    Map<String, dynamic> diszitoertek = widget.novenyAdat!.diszitoertek;
+    diszitoTavasz[Diszitoertek.kereg] =
+        diszitoertek['tavasz'].contains('kereg');
+    diszitoTavasz[Diszitoertek.lomb] = diszitoertek['tavasz'].contains('lomb');
+    diszitoTavasz[Diszitoertek.level] =
+        diszitoertek['tavasz'].contains('level');
+    diszitoTavasz[Diszitoertek.virag] =
+        diszitoertek['tavasz'].contains('virag');
+    diszitoTavasz[Diszitoertek.termes] =
+        diszitoertek['tavasz'].contains('termes');
+    diszitoNyar[Diszitoertek.kereg] = diszitoertek['nyar'].contains('kereg');
+    diszitoNyar[Diszitoertek.lomb] = diszitoertek['nyar'].contains('lomb');
+    diszitoNyar[Diszitoertek.level] = diszitoertek['nyar'].contains('level');
+    diszitoNyar[Diszitoertek.virag] = diszitoertek['nyar'].contains('virag');
+    diszitoNyar[Diszitoertek.termes] = diszitoertek['nyar'].contains('termes');
+    diszitoOsz[Diszitoertek.kereg] = diszitoertek['osz'].contains('kereg');
+    diszitoOsz[Diszitoertek.lomb] = diszitoertek['osz'].contains('lomb');
+    diszitoOsz[Diszitoertek.level] = diszitoertek['osz'].contains('level');
+    diszitoOsz[Diszitoertek.virag] = diszitoertek['osz'].contains('virag');
+    diszitoOsz[Diszitoertek.termes] = diszitoertek['osz'].contains('termes');
+    diszitoTel[Diszitoertek.kereg] = diszitoertek['tel'].contains('kereg');
+    diszitoTel[Diszitoertek.lomb] = diszitoertek['tel'].contains('lomb');
+    diszitoTel[Diszitoertek.level] = diszitoertek['tel'].contains('level');
+    diszitoTel[Diszitoertek.virag] = diszitoertek['tel'].contains('virag');
+    diszitoTel[Diszitoertek.termes] = diszitoertek['tel'].contains('termes');
+
+    List<dynamic> alkalmazasiLehetoseg = widget.novenyAdat!.alkalmazas;
+    alkalmazas[AlkalmazasLehetoseg.bokorfa] =
+        alkalmazasiLehetoseg.contains('bokorfa');
+    alkalmazas[AlkalmazasLehetoseg.sorfa] =
+        alkalmazasiLehetoseg.contains('sorfa');
+    alkalmazas[AlkalmazasLehetoseg.parkfa] =
+        alkalmazasiLehetoseg.contains('parkfa');
+  }
+
+  Widget _szovegesMezo(String label, bool csakSzam, Object initialValue,
+      Function(String) onChanged) {
     return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
         child: TextFormField(
+          initialValue: initialValue.toString(),
           decoration: InputDecoration(
             labelText: label,
           ),
-          onChanged: (value) => {
-            setState(() {
-              mezo = value;
-            })
-          },
+          keyboardType: csakSzam ? TextInputType.number : TextInputType.text,
+          onChanged: onChanged,
           validator: (value) {
             if (value == null || value.isEmpty) {
               return 'A mező kitöltése kötelező!';
@@ -121,9 +228,7 @@ class _AddPlantState extends State<AddPlant> {
 
     return Scaffold(
         appBar: AppBar(
-          title: const Text(
-            'Növény hozzáadása',
-          ),
+          title: Text(cim),
         ),
         body: ListView(children: [
           Form(
@@ -134,7 +239,15 @@ class _AddPlantState extends State<AddPlant> {
                     Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: kisCim('Alapadatok')),
-                    _szovegesMezo('Latin név', nev, false),
+                    _szovegesMezo(
+                        'Latin név',
+                        false,
+                        nev,
+                        (value) => {
+                              setState(() {
+                                nev = value;
+                              })
+                            }),
                     Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Row(
@@ -155,7 +268,15 @@ class _AddPlantState extends State<AddPlant> {
                             )
                           ],
                         )),
-                    _szovegesMezo('Leírás', leiras, false),
+                    _szovegesMezo(
+                        'Leírás',
+                        false,
+                        leiras,
+                        (value) => {
+                              setState(() {
+                                leiras = value;
+                              })
+                            }),
                     Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Row(children: [
@@ -197,9 +318,33 @@ class _AddPlantState extends State<AddPlant> {
                             },
                           )
                         ])),
-                    _szovegesMezo('Élettartam', ido, true),
-                    _szovegesMezo('Szélesség', szelesseg, true),
-                    _szovegesMezo('Magasság', magassag, true),
+                    _szovegesMezo(
+                        'Élettartam',
+                        true,
+                        ido,
+                        (value) => {
+                              setState(() {
+                                ido = value;
+                              })
+                            }),
+                    _szovegesMezo(
+                        'Szélesség',
+                        true,
+                        szelesseg,
+                        (value) => {
+                              setState(() {
+                                szelesseg = value;
+                              })
+                            }),
+                    _szovegesMezo(
+                        'Magasság',
+                        true,
+                        magassag,
+                        (value) => {
+                              setState(() {
+                                magassag = value;
+                              })
+                            }),
                     Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Column(
@@ -308,7 +453,7 @@ class _AddPlantState extends State<AddPlant> {
         ]));
   }
 
-  void savePlant(ApplicationState appState) {
+  void savePlant(ApplicationState appState, Noveny? noveny) {
     GeoPoint koords = GeoPoint(lat, lon);
     Map<String, String> meretek = <String, String>{
       'ido': ido,
@@ -352,10 +497,10 @@ class _AddPlantState extends State<AddPlant> {
     });
 
     Map<String, List<String>> diszitoertek = <String, List<String>>{
-      "tavasz": tavasz,
-      "nyar": nyar,
-      "osz": osz,
-      "tel": tel
+      'tavasz': tavasz,
+      'nyar': nyar,
+      'osz': osz,
+      'tel': tel
     };
 
     List<String> napfenyIgenyList = [];
@@ -373,11 +518,51 @@ class _AddPlantState extends State<AddPlant> {
     });
 
     Map<String, List<String>> igenyek = <String, List<String>>{
-      "fenyigeny": napfenyIgenyList,
-      "talaj": talajList
+      'fenyigeny': napfenyIgenyList,
+      'talaj': talajList
     };
 
-    appState.saveNoveny(tipus.name, nev, leiras, koords, meretek, alkalmazasok,
-        diszitoertek, igenyek);
+    if (noveny != null) {
+      appState.saveNoveny(noveny.id, tipus.name, nev, leiras, koords, meretek,
+          alkalmazasok, diszitoertek, igenyek);
+    } else {
+      appState.saveNewNoveny(tipus.name, nev, leiras, koords, meretek,
+          alkalmazasok, diszitoertek, igenyek);
+    }
+
+    /*String title = '';
+
+    showDialog<void>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(
+            title,
+            style: const TextStyle(fontSize: 20),
+          ),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(
+                  '${(e as dynamic).message}',
+                  style: const TextStyle(fontSize: 16),
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                'Értem',
+                style: TextStyle(color: Colors.green),
+              ),
+            ),
+          ],
+        );
+      },
+    );*/
   }
 }

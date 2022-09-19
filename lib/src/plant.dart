@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:arborapp/src/enums.dart';
 import 'package:arborapp/src/types.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -16,16 +14,12 @@ class Plant extends StatelessWidget {
 
   final Noveny noveny;
 
-  Future<NovenyAdat> loadNovenyAdat(appState) async {
-    return await appState.getNovenyAdat(noveny.id);
-  }
-
   @override
   Widget build(BuildContext context) {
     final appState = Provider.of<ApplicationState>(context);
 
     return FutureBuilder<NovenyAdat>(
-        future: loadNovenyAdat(appState),
+        future: appState.getNovenyAdat(noveny.id),
         builder: (BuildContext context,
             AsyncSnapshot<NovenyAdat> novenyAdatSnapshot) {
           switch (novenyAdatSnapshot.connectionState) {

@@ -114,6 +114,118 @@ class ApplicationState extends ChangeNotifier {
     return novenyek.where((n) => n.id == novenyId).single;
   }
 
+  void initJegyzetek() {
+    FirebaseFirestore.instance
+        .collection('jegyzetek')
+        .orderBy('modositva', descending: true)
+        .where('user', isEqualTo: _currentUser)
+        .snapshots()
+        .listen((snapshot) {
+      _jegyzetek = [];
+      _jegyzetekSzama = snapshot.docs.length;
+      for (final document in snapshot.docs) {
+        _jegyzetek.add(
+          JegyzetAdat(
+              id: document.reference,
+              noveny: document.data()['noveny'],
+              modositva: DateTime.fromMillisecondsSinceEpoch(document.data()['modositva']),
+              szoveg: document.data()['szoveg'] as String,
+              szerzo: document.data()['user']
+          ),
+        );
+      }
+    });
+  }
+
+  void startLogin() {
+    _loginState = LoginState.login;
+    notifyListeners();
+  }
+
+  void startRegister() {
+    _loginState = LoginState.register;
+    notifyListeners();
+  }
+
+  void megszakit() {
+    _loginState = LoginState.loggedOut;
+    notifyListeners();
+  }
+
+  Future<bool> verifyEmail(
+    String email,
+    void Function(FirebaseAuthException e) errorCallback,
+  ) async {
+    try {
+      var methods =
+          await FirebaseAuth.instance.fetchSignInMethodsForEmail(email);
+      return methods.contains('password');
+    } on FirebaseAuthException catch (e) {
+      errorCallback(e);
+      return false;
+    }
+  }
+
+  Future<void> signIn(
+    String email,
+    String password,
+    void Function(FirebaseAuthException e) errorCallback,
+  ) async {
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+    } on FirebaseAuthException catch (e) {
+      errorCallback(e);
+    }
+  }
+
+  Future<void> register(String email, String nickname, String password,
+      void Function(FirebaseAuthException e) errorCallback) async {
+    try {
+      var credential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+      await credential.user!.updateDisplayName(nickname);
+    } on FirebaseAuthException catch (e) {
+      errorCallback(e);
+    }
+  }
+
+  void signOut() {
+    FirebaseAuth.instance.signOut();
+    _currentUser = null;
+    _loginState = LoginState.loggedOut;
+    notifyListeners();
+  }
+
+  Future<void> resetPassword(String email,
+      void Function(FirebaseAuthException e) errorCallback) async {
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+    } on FirebaseAuthException catch (e) {
+      errorCallback(e);
+    }
+  }
+
+  Future<void> deleteAcc(
+      void Function(FirebaseAuthException e) errorCallback) async {
+    try {
+      FirebaseAuth.instance.currentUser?.delete();
+      for (var j in _jegyzetek) {
+        FirebaseFirestore.instance
+            .collection('jegyzetek')
+            .doc(j.id.id)
+            .delete();
+      }
+      _loginState = LoginState.loggedOut;
+      _currentUser = null;
+      notifyListeners();
+    } on FirebaseAuthException catch (e) {
+      errorCallback(e);
+    }
+  }
+
   Future<NovenyAdat> getNovenyAdat(DocumentReference novenyId) async {
     var snapshot = await FirebaseFirestore.instance
         .collection('novenyAdat')
@@ -178,123 +290,6 @@ class ApplicationState extends ChangeNotifier {
     }
   }
 
-  void initJegyzetek() {
-    FirebaseFirestore.instance
-        .collection('jegyzetek')
-        .orderBy('modositva', descending: true)
-        .where('user', isEqualTo: _currentUser)
-        .snapshots()
-        .listen((snapshot) {
-      _jegyzetek = [];
-      _jegyzetekSzama = snapshot.docs.length;
-      for (final document in snapshot.docs) {
-        _jegyzetek.add(
-          JegyzetAdat(
-              id: document.reference,
-              noveny: document.data()['noveny'],
-              modositva: DateTime.fromMillisecondsSinceEpoch(document.data()['modositva']),
-              szoveg: document.data()['szoveg'] as String,
-              szerzo: document.data()['user']
-          ),
-        );
-      }
-    });
-  }
-
-  void startLogin() {
-    _loginState = LoginState.login;
-    notifyListeners();
-  }
-
-  void startRegister() {
-    _loginState = LoginState.register;
-    notifyListeners();
-  }
-
-  void megszakit() {
-    _loginState = LoginState.loggedOut;
-    notifyListeners();
-  }
-
-  Future<bool> verifyEmail(String email,
-      void Function(FirebaseAuthException e) errorCallback,
-      ) async {
-    try {
-      var methods = await FirebaseAuth.instance.fetchSignInMethodsForEmail(email);
-      return methods.contains('password');
-    } on FirebaseAuthException catch (e) {
-      errorCallback(e);
-      return false;
-    }
-  }
-
-  Future<void> signIn(
-      String email,
-      String password,
-      void Function(FirebaseAuthException e) errorCallback,
-      ) async {
-    try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-    } on FirebaseAuthException catch (e) {
-      errorCallback(e);
-    }
-  }
-
-  Future<void> register(
-      String email,
-      String nickname,
-      String password,
-      void Function(FirebaseAuthException e) errorCallback
-      ) async {
-    try {
-      var credential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email, password: password);
-      await credential.user!.updateDisplayName(nickname);
-    } on FirebaseAuthException catch (e) {
-      errorCallback(e);
-    }
-  }
-
-  void signOut() {
-    FirebaseAuth.instance.signOut();
-    _currentUser = null;
-    _loginState = LoginState.loggedOut;
-    notifyListeners();
-  }
-
-  Future<void> resetPassword(
-      String email,
-      void Function(FirebaseAuthException e) errorCallback
-      ) async {
-    try {
-      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
-    } on FirebaseAuthException catch (e) {
-      errorCallback(e);
-    }
-  }
-
-  Future<void> deleteAcc(
-      void Function(FirebaseAuthException e) errorCallback
-      ) async {
-    try {
-      FirebaseAuth.instance.currentUser?.delete();
-      for (var j in _jegyzetek) {
-        FirebaseFirestore.instance
-            .collection('jegyzetek')
-            .doc(j.id.id)
-            .delete();
-      }
-      _loginState = LoginState.loggedOut;
-      _currentUser = null;
-      notifyListeners();
-    } on FirebaseAuthException catch (e) {
-      errorCallback(e);
-    }
-  }
-
   void saveNote(DocumentReference noveny, String szoveg) async {
     if (szoveg.isEmpty) {
       return;
@@ -335,6 +330,52 @@ class ApplicationState extends ChangeNotifier {
   }
 
   Future<void> saveNoveny(
+      DocumentReference id,
+      String tipus,
+      String nev,
+      String leiras,
+      GeoPoint koords,
+      Map<String, String> meret,
+      List<String> alkalmazas,
+      Map<String, List<String>> diszitoertek,
+      Map<String, List<String>> igenyek) async {
+    await FirebaseFirestore.instance
+        .collection('novenyek')
+        .doc(id.id)
+        .update(<String, String>{'nev': nev, 'tipus': tipus});
+
+    await FirebaseFirestore.instance
+        .collection('novenyAdat')
+        .where('noveny_id', isEqualTo: id.id)
+        .limit(1)
+        .get()
+        .then((value) {
+      for (var doc in value.docs) {
+        doc.reference.update(<String, dynamic>{
+          'leiras': leiras,
+          'meret': meret,
+          'alkalmazas': alkalmazas,
+          'diszitoertek': diszitoertek,
+          'kornyezeti_igeny': igenyek
+        });
+      }
+    });
+
+    await FirebaseFirestore.instance
+        .collection('koordinata')
+        .where('noveny_id', isEqualTo: id.id)
+        .limit(1)
+        .get()
+        .then((value) {
+      for (var doc in value.docs) {
+        doc.reference.update(<String, dynamic>{'coords': koords});
+      }
+    });
+
+    initNovenyek();
+  }
+
+  Future<void> saveNewNoveny(
       String tipus,
       String nev,
       String leiras,
@@ -362,5 +403,7 @@ class ApplicationState extends ChangeNotifier {
     await FirebaseFirestore.instance
         .collection('koordinata')
         .add(<String, dynamic>{'noveny_id': novenyId, 'coords': koords});
+
+    initNovenyek();
   }
 }

@@ -139,6 +139,9 @@ class _AddPlantFormState extends State<_AddPlantForm> {
         igenyek['fenyigeny'].contains('felarnyekos');
     napfenyIgeny[NapfenyIgeny.arnyek] =
         igenyek['fenyigeny'].contains('arnyekos');
+    talajIgeny[TalajIgeny.savanyu] = igenyek['talaj'].contains('savanyu');
+    talajIgeny[TalajIgeny.meszes] = igenyek['talaj'].contains('meszes');
+    talajIgeny[TalajIgeny.semleges] = igenyek['talaj'].contains('semleges');
 
     Map<String, dynamic> diszitoertek = widget.novenyAdat!.diszitoertek;
     diszitoTavasz[Diszitoertek.kereg] =

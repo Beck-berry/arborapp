@@ -1,4 +1,6 @@
+import 'package:arborapp/src/addPlant.dart';
 import 'package:arborapp/src/applicationState.dart';
+import 'package:arborapp/src/editPlant.dart';
 import 'package:arborapp/src/enums.dart';
 import 'package:arborapp/src/info.dart';
 import 'package:arborapp/src/map.dart';
@@ -98,6 +100,23 @@ class MyHomePage extends StatelessWidget {
                         deleteAcc: appState.deleteAcc,
                         resetPassword: appState.resetPassword)),
               ),
+              if (appState.isAdmin) ...[
+                const Divider(),
+                FoMenuButton(
+                  cimke: 'Növény hozzáadása',
+                  ikon: Icons.add,
+                  onPress: Consumer<ApplicationState>(
+                    builder: (context, appState, _) => const AddPlant(),
+                  ),
+                ),
+                FoMenuButton(
+                  cimke: 'Növény szerkesztése',
+                  ikon: Icons.edit,
+                  onPress: Consumer<ApplicationState>(
+                    builder: (context, appState, _) => const EditPlant(),
+                  ),
+                )
+              ],
             ],
             footer: Footer(
               padding: const EdgeInsets.symmetric(vertical: 10.0),
@@ -128,7 +147,7 @@ class FoMenuButton extends StatelessWidget {
           style: ElevatedButton.styleFrom(
             minimumSize: const Size.fromHeight(40),
             shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           ),
           onPressed: () {
             Navigator.push(

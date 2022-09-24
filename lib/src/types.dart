@@ -3,19 +3,14 @@ import 'package:azlistview/azlistview.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Noveny extends ISuspensionBean {
-  Noveny(
-      {required this.id,
-      required this.nev,
-      required this.tipus,
-      required this.alphabetIndex});
+  Noveny({required this.id, required this.nev, required this.tipus});
 
   final DocumentReference id;
   final String nev;
   final NovenyTipus tipus;
-  final int alphabetIndex;
 
   @override
-  String getSuspensionTag() => alphabetIndex.toString();
+  String getSuspensionTag() => nev.substring(0);
 }
 
 class NovenyAdat {

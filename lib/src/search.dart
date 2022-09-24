@@ -27,6 +27,7 @@ class _SearchState extends State<Search> {
   Widget build(BuildContext context) {
     final appState = Provider.of<ApplicationState>(context);
     List<Noveny> novenyek = appState.novenyek;
+    SuspensionUtil.sortListBySuspensionTag(novenyek);
 
     return Scaffold(
         appBar: AppBar(

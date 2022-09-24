@@ -111,7 +111,7 @@ class _ShowNovenyAdat extends StatelessWidget {
                             builder: (context) => Terkep(novenyId: noveny.id)));
                   },
                   child: const Text('Mutasd a térképen!')),
-              Jegyzet(novenyId: noveny.id)
+              _Jegyzet(novenyId: noveny.id)
             ]));
   }
 }
@@ -320,7 +320,7 @@ class Alkalmazas extends StatelessWidget {
         Row(
           children: [
             const Text('|| '),
-            for (String a in alkalmazas) ...[Text(a + ' || ')]
+            for (String a in alkalmazas) ...[Text('$a || ')]
           ],
         )
       ],
@@ -328,11 +328,8 @@ class Alkalmazas extends StatelessWidget {
   }
 }
 
-class Jegyzet extends StatefulWidget {
-  const Jegyzet({
-    required this.novenyId,
-    super.key
-  });
+class _Jegyzet extends StatefulWidget {
+  const _Jegyzet({required this.novenyId});
 
   final DocumentReference novenyId;
 
@@ -340,7 +337,7 @@ class Jegyzet extends StatefulWidget {
   _JegyzetState createState() => _JegyzetState();
 }
 
-class _JegyzetState extends State<Jegyzet> {
+class _JegyzetState extends State<_Jegyzet> {
   NoteState _noteState = NoteState.show;
   late TextEditingController _controller;
 

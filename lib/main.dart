@@ -45,6 +45,10 @@ class MyHomePage extends StatelessWidget {
           title: Text(appState.appName.toUpperCase()),
         ),
         body: FooterView(
+            footer: Footer(
+              padding: const EdgeInsets.symmetric(vertical: 10.0),
+              child: Text('Verzió: ${appState.version}'),
+            ),
             children: [
               Image.asset('assets/images/logo.png'),
               Container(
@@ -117,11 +121,7 @@ class MyHomePage extends StatelessWidget {
                   ),
                 )
               ],
-            ],
-            footer: Footer(
-              padding: const EdgeInsets.symmetric(vertical: 10.0),
-              child: Text('Verzió: ' + appState.version),
-            )));
+            ]));
   }
 }
 

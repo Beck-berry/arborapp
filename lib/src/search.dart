@@ -11,10 +11,10 @@ class Search extends StatefulWidget {
   const Search({super.key});
 
   @override
-  _SearchState createState() => _SearchState();
+  SearchState createState() => SearchState();
 }
 
-class _SearchState extends State<Search> {
+class SearchState extends State<Search> {
   final _searchController = TextEditingController();
 
   @override

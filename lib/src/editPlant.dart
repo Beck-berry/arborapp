@@ -10,10 +10,10 @@ class EditPlant extends StatefulWidget {
   const EditPlant({Key? key}) : super(key: key);
 
   @override
-  _EditPlantState createState() => _EditPlantState();
+  EditPlantState createState() => EditPlantState();
 }
 
-class _EditPlantState extends State<EditPlant> {
+class EditPlantState extends State<EditPlant> {
   bool novenyKivalasztva = false;
   late Noveny valasztottNoveny;
 

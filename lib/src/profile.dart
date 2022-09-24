@@ -129,8 +129,8 @@ class Profile extends StatelessWidget {
           ],
         ));
       case LoginState.login:
-        String _email = '';
-        String _pswd = '';
+        String email = '';
+        String pswd = '';
 
         return base(Column(
           children: [
@@ -141,13 +141,13 @@ class Profile extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
                         child: TextFormField(
                           decoration: const InputDecoration(
-                            hintText: 'Regisztrált e-mail cím',
-                          ),
-                          onChanged: (value) => _email = value,
+                          hintText: 'Regisztrált e-mail cím',
                         ),
+                        onChanged: (value) => email = value,
+                      ),
                       ),
                     ],
                   ),
@@ -163,11 +163,11 @@ class Profile extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 24),
                         child: TextFormField(
                           decoration: const InputDecoration(
-                            hintText: 'Jelszavad',
-                          ),
-                          obscureText: true,
-                          onChanged: (value) => _pswd = value,
+                          hintText: 'Jelszavad',
                         ),
+                        obscureText: true,
+                        onChanged: (value) => pswd = value,
+                      ),
                       ),
                     ],
                   ),
@@ -181,18 +181,18 @@ class Profile extends StatelessWidget {
                         vertical: 16.0, horizontal: 30),
                     child: ElevatedButton(
                       onPressed: () {
-                        if (_email != '') {
+                        if (email != '') {
                         verifyEmail(
-                            _email,
+                            email,
                             (e) => _showHibaUzenet(
                                 context,
                                 'Ehhez az e-mail címhez nem tartozik felhasználó.',
                                 e));
                       }
-                      if (_email != '' && _pswd != '') {
+                      if (email != '' && pswd != '') {
                         signIn(
-                            _email,
-                            _pswd,
+                            email,
+                            pswd,
                             (e) => _showHibaUzenet(
                                 context, 'Sikertelen bejelentkezés', e));
                       }
@@ -205,7 +205,7 @@ class Profile extends StatelessWidget {
                         vertical: 16.0, horizontal: 30),
                     child: ElevatedButton(
                       onPressed: () {
-                        megszakit();
+                      megszakit();
                     },
                     child: const Text('Vissza'),
                   ),
@@ -215,10 +215,10 @@ class Profile extends StatelessWidget {
           ],
         ));
       case LoginState.register:
-        String _email = '';
-        String _nickname = '';
-        String _pswd1 = '';
-        String _pswd2 = '';
+        String email = '';
+        String nickname = '';
+        String pswd1 = '';
+        String pswd2 = '';
 
         return base(Column(
           children: [
@@ -229,42 +229,42 @@ class Profile extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                       Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 24),
+                          padding: const EdgeInsets.symmetric(horizontal: 24),
                                 child: TextFormField(
                                   decoration: const InputDecoration(
-                                    hintText: 'Felhasználónév',
-                                  ),
-                                  onChanged: (value) => _nickname = value,
-                                )
+                              hintText: 'Felhasználónév',
+                            ),
+                            onChanged: (value) => nickname = value,
+                          )
                             ),
                             Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 24),
                                 child: TextFormField(
                                   decoration: const InputDecoration(
-                                    hintText: 'E-mail cím',
-                                  ),
-                                  onChanged: (value) => _email = value,
-                                )
+                              hintText: 'E-mail cím',
+                            ),
+                            onChanged: (value) => email = value,
+                          )
                             ),
                             Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 24),
                                 child: TextFormField(
                                   decoration: const InputDecoration(
-                                    hintText: 'Jelszó',
-                                  ),
-                                  obscureText: true,
-                                  onChanged: (value) => _pswd1 = value,
-                                )
+                              hintText: 'Jelszó',
+                            ),
+                            obscureText: true,
+                            onChanged: (value) => pswd1 = value,
+                          )
                             ),
                             Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 24),
                                 child: TextFormField(
                                   decoration: const InputDecoration(
-                                    hintText: 'Jelszó újra',
-                                  ),
-                                  obscureText: true,
-                                  onChanged: (value) => _pswd2 = value,
-                                )
+                              hintText: 'Jelszó újra',
+                            ),
+                            obscureText: true,
+                            onChanged: (value) => pswd2 = value,
+                          )
                             ),
                           ]
                       )
@@ -288,23 +288,23 @@ class Profile extends StatelessWidget {
                       vertical: 16.0, horizontal: 30),
                   child: ElevatedButton(
                     onPressed: () {
-                      if (_pswd1 == '' || _pswd2 == '' || _pswd1 != _pswd2) {
+                      if (pswd1 == '' || pswd2 == '' || pswd1 != pswd2) {
                         _showHibaUzenet(
                             context,
                             'Hibás jelszó',
                             Exception(
                                 'A beírt jelszavak nem egyeznek, próbáld újra!'));
-                      } else if (_email == '') {
+                      } else if (email == '') {
                         _showHibaUzenet(context, 'Hibás e-mail',
                             Exception('E-mail cím megadása kötelező!'));
-                      } else if (_nickname == '') {
+                      } else if (nickname == '') {
                         _showHibaUzenet(context, 'Hibás felhasználónév',
                             Exception('Felhasználónév megadása kötelező!'));
                       } else {
                         register(
-                            _email,
-                            _nickname,
-                            _pswd1,
+                            email,
+                            nickname,
+                            pswd1,
                             (e) => _showHibaUzenet(
                                 context, 'Sikertelen regisztráció', e));
                       }
@@ -318,17 +318,16 @@ class Profile extends StatelessWidget {
           )
         );
       case LoginState.loggedIn:
-        User? _user = FirebaseAuth.instance.currentUser;
+        User? user = FirebaseAuth.instance.currentUser;
 
         return base(
-          Column(
-            children: [
-              Container(
-                margin: const EdgeInsets.symmetric(vertical: 20.0),
-                padding: const EdgeInsets.all(15.0),
-                height: 300,
-                width: 300,
-                decoration: BoxDecoration(
+          Column(children: [
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 20.0),
+              padding: const EdgeInsets.all(15.0),
+              height: 300,
+              width: 300,
+              decoration: BoxDecoration(
                   color: Colors.white,
                   border: Border.all(
                     color: Colors.green,
@@ -352,15 +351,15 @@ class Profile extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      _user!.displayName.toString(),
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                        letterSpacing: 2.5,
-                      ),
+                      user!.displayName.toString(),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                      letterSpacing: 2.5,
                     ),
-                    Text(_user.email.toString())
-                  ],
+                  ),
+                    Text(user.email.toString())
+                ],
                 ),
               ),
               Container(

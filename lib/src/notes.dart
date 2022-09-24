@@ -38,7 +38,7 @@ class Notes extends StatelessWidget {
                   hint: 'Jegyzet keresése',
                   hasOverlay: false,
                   onSubmit: (value) {
-                    Noveny kivalasztottNoveny =
+                Noveny kivalasztottNoveny =
                     novenyek.where((noveny) => noveny.nev == value).first;
                 Navigator.push(
                     context,
@@ -46,19 +46,23 @@ class Notes extends StatelessWidget {
                         builder: (context) =>
                             Plant(noveny: kivalasztottNoveny)));
               },
-                ),
-              ),
-              Text("Keresés ${appState.jegyzetekSzama} jegyzet között..."),
-              Expanded(
-                  child:ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: jegyzetek.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text(novenyek.where((n) => n.id == jegyzetek[index].noveny).first.nev),
-                        subtitle: Text("Módosítva: ${jegyzetek[index].modositva.year}.${jegyzetek[index].modositva.month}.${jegyzetek[index].modositva.day}. ${jegyzetek[index].modositva.hour}:${jegyzetek[index].modositva.minute}"),
-                        onTap: () {
-                          Noveny kivalasztottNoveny = novenyek
+            ),
+          ),
+          Text('Keresés ${appState.jegyzetekSzama} jegyzet között...'),
+          Expanded(
+              child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: jegyzetek.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                title: Text(novenyek
+                    .where((n) => n.id == jegyzetek[index].noveny)
+                    .first
+                    .nev),
+                subtitle: Text(
+                    'Módosítva: ${jegyzetek[index].modositva.year}.${jegyzetek[index].modositva.month}.${jegyzetek[index].modositva.day}. ${jegyzetek[index].modositva.hour}:${jegyzetek[index].modositva.minute}'),
+                onTap: () {
+                  Noveny kivalasztottNoveny = novenyek
                       .where((noveny) => noveny.id == jegyzetek[index].noveny)
                       .first;
                   Navigator.push(
@@ -67,7 +71,7 @@ class Notes extends StatelessWidget {
                           builder: (context) =>
                               Plant(noveny: kivalasztottNoveny)));
                 },
-                      );
+              );
                     },
                   )
               )

@@ -39,10 +39,24 @@ class Terkep extends StatelessWidget {
   }
 }
 
-class _ShowMap extends StatelessWidget {
+class _ShowMap extends StatefulWidget {
   const _ShowMap({required this.novenyek});
 
   final List<NovenyKoordinata>? novenyek;
+
+  @override
+  _ShowMapState createState() => _ShowMapState();
+}
+
+class _ShowMapState extends State<_ShowMap> {
+  late List<Marker> markers;
+  late List<NovenyTipus> novenyTipusok;
+
+  @override
+  void initState() {
+    novenyTipusok = List.from(NovenyTipus.values);
+    super.initState();
+  }
 
   void jelmagyarazatPopup(BuildContext context) {
     showDialog<void>(
@@ -83,12 +97,51 @@ class _ShowMap extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final appState = Provider.of<ApplicationState>(context);
-    List<Marker> markers = getAllMarkers(appState, novenyek!);
+
+    if (widget.novenyek != null) {
+      Iterable<NovenyKoordinata> rajzoltNoveny = widget.novenyek!.where(
+          (koord) => novenyTipusok
+              .contains(appState.getNovenyById(koord.novenyId).tipus));
+      markers = getAllMarkers(appState, rajzoltNoveny);
+    }
 
     return Scaffold(
         appBar: AppBar(
           title: const Text(
             'Térkép',
+          ),
+        ),
+        drawer: Drawer(
+          child: ListView(
+            children: [
+              const DrawerHeader(
+                padding: EdgeInsets.fromLTRB(10.0, 70.0, 10.0, 0.0),
+                decoration: BoxDecoration(
+                  color: Colors.green,
+                  shape: BoxShape.rectangle,
+                ),
+                child: Text('A térképen megjelenő növénytípusok',
+                    style: TextStyle(color: Colors.white)),
+              ),
+              for (NovenyTipus tipus in NovenyTipus.values) ...[
+                Row(
+                  children: [
+                    Checkbox(
+                      checkColor: Colors.white,
+                      value: novenyTipusok.contains(tipus),
+                      onChanged: (bool? ujErtek) => {
+                        setState(() {
+                          ujErtek!
+                              ? novenyTipusok.add(tipus)
+                              : novenyTipusok.remove(tipus);
+                        })
+                      },
+                    ),
+                    Text(tipus.name)
+                  ],
+                )
+              ]
+            ],
           ),
         ),
         floatingActionButton: FloatingActionButton(
@@ -111,7 +164,7 @@ class _ShowMap extends StatelessWidget {
                 minZoom: 16,
                 maxZoom: 19,
                 urlTemplate:
-                    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
                 subdomains: ['a', 'b', 'c'],
                 tileBounds: LatLngBounds(LatLng(47.4753677, 19.0298865),
                     LatLng(47.4890959, 19.0470638))),
@@ -127,7 +180,7 @@ class _ShowMap extends StatelessWidget {
   }
 }
 
-List<Marker> getAllMarkers(appState, List<NovenyKoordinata> novenyek) {
+List<Marker> getAllMarkers(appState, Iterable<NovenyKoordinata> novenyek) {
   List<Marker> allMarkers = [];
 
   for (var n in novenyek) {

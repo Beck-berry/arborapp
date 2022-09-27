@@ -1,4 +1,5 @@
 import 'package:arborapp/src/plant.dart';
+import 'package:arborapp/src/qrReader.dart';
 import 'package:arborapp/src/types.dart';
 import 'package:azlistview/azlistview.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +35,19 @@ class SearchState extends State<Search> {
           title: const Text(
             'Keresés',
           ),
+          actions: [
+            IconButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => Consumer<ApplicationState>(
+                                builder: (context, appState, _) =>
+                                    const QrReader(),
+                              )));
+                },
+                icon: const Icon(Icons.qr_code_scanner))
+          ],
         ),
         body: Column(children: [
           Container(

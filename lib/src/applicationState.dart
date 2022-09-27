@@ -111,6 +111,10 @@ class ApplicationState extends ChangeNotifier {
     return novenyek.where((n) => n.id == novenyId).single;
   }
 
+  Noveny getNovenyByIdString(String novenyId) {
+    return novenyek.where((n) => n.id.id == novenyId).single;
+  }
+
   void initJegyzetek() {
     FirebaseFirestore.instance
         .collection('jegyzetek')

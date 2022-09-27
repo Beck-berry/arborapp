@@ -1,4 +1,5 @@
 import 'package:arborapp/src/enums.dart';
+import 'package:arborapp/src/profile.dart';
 import 'package:arborapp/src/types.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -346,8 +347,36 @@ class _JegyzetState extends State<_Jegyzet> {
     final appState = Provider.of<ApplicationState>(context);
 
     if (appState.loginState != LoginState.loggedIn) {
-      return const Text(
-          "Jegyzetet írhatsz a növényhez, miután bejelentkeztél.");
+      return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 30.0, horizontal: 15.0),
+          child: Column(
+            children: [
+              const Text(
+                'Jegyzetet csak akkor írhatsz a növényhez, ha már bejelentkeztél.',
+                textAlign: TextAlign.justify,
+              ),
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Consumer<ApplicationState>(
+                              builder: (context, appState, _) => Profile(
+                                  loginState: appState.loginState,
+                                  startLogin: appState.startLogin,
+                                  startRegister: appState.startRegister,
+                                  verifyEmail: appState.verifyEmail,
+                                  signIn: appState.signIn,
+                                  megszakit: appState.megszakit,
+                                  register: appState.register,
+                                  signOut: appState.signOut,
+                                  deleteAcc: appState.deleteAcc,
+                                  resetPassword: appState.resetPassword)),
+                        ));
+                  },
+                  child: const Text('Bejelentkezés'))
+            ],
+          ));
     }
 
     // csak ehhez a növényhez tartozó jegyzet megjelenítése

@@ -10,6 +10,7 @@ import 'package:arborapp/src/search.dart';
 import 'package:flutter/material.dart';
 import 'package:footer/footer.dart';
 import 'package:footer/footer_view.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -33,8 +34,28 @@ class Arborapp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
+
+  @override
+  MyHomePageState createState() => MyHomePageState();
+}
+
+class MyHomePageState extends State<MyHomePage> {
+  late String version;
+
+  @override
+  void initState() {
+    initPackageInfo();
+    super.initState();
+  }
+
+  Future<void> initPackageInfo() async {
+    final PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    setState(() {
+      version = packageInfo.version;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,12 +63,12 @@ class MyHomePage extends StatelessWidget {
 
     return Scaffold(
         appBar: AppBar(
-          title: Text(appState.appName.toUpperCase()),
+          title: const Text('ArborApp'),
         ),
         body: FooterView(
             footer: Footer(
               padding: const EdgeInsets.symmetric(vertical: 10.0),
-              child: Text('Verzió: ${appState.version}'),
+              child: Text('Verzió: $version'),
             ),
             children: [
               Image.asset('assets/images/logo.png'),
@@ -60,7 +81,7 @@ class MyHomePage extends StatelessWidget {
                   )),
               FoMenuButton(
                 cimke: 'A Budai Arborétumról...',
-                ikon: Icons.question_mark,
+                ikon: Icons.article,
                 onPress: Consumer<ApplicationState>(
                   builder: (context, appState, _) => const Info(),
                 ),
@@ -115,7 +136,7 @@ class MyHomePage extends StatelessWidget {
                 ),
                 FoMenuButton(
                   cimke: 'Növény szerkesztése',
-                  ikon: Icons.edit,
+                  ikon: Icons.auto_fix_high,
                   onPress: Consumer<ApplicationState>(
                     builder: (context, appState, _) => const EditPlant(),
                   ),

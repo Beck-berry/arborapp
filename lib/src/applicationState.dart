@@ -6,46 +6,32 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 
 import '../firebase_options.dart';
 
 class ApplicationState extends ChangeNotifier {
-  late String appName;
-  late String packageName;
-  late String version;
-  late String buildNumber;
-
   LoginState _loginState = LoginState.loggedOut;
-
   LoginState get loginState => _loginState;
 
   late String? _currentUser;
-
   String? get currentUser => _currentUser;
 
   bool _isAdmin = false;
-
   bool get isAdmin => _isAdmin;
 
   List<Noveny> _novenyek = [];
-
   List<Noveny> get novenyek => _novenyek;
 
   int _novenyekSzama = 0;
-
   int get novenyekSzama => _novenyekSzama;
 
   List<JegyzetAdat> _jegyzetek = [];
-
   List<JegyzetAdat> get jegyzetek => _jegyzetek;
 
   int _jegyzetekSzama = 0;
-
   int get jegyzetekSzama => _jegyzetekSzama;
 
   NoteState _noteState = NoteState.show;
-
   NoteState get noteState => _noteState;
 
   ApplicationState() {
@@ -57,37 +43,36 @@ class ApplicationState extends ChangeNotifier {
       options: DefaultFirebaseOptions.currentPlatform,
     );
 
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    appName = packageInfo.appName;
-    packageName = packageInfo.packageName;
-    version = packageInfo.version;
-    buildNumber = packageInfo.buildNumber;
-
-    initNovenyek();
-
     FirebaseAuth.instance.userChanges().listen((user) {
       if (user != null) {
-        _loginState = LoginState.loggedIn;
         _currentUser = user.uid;
-        FirebaseFirestore.instance
-            .collection('admin')
-            .snapshots()
-            .listen((snapshot) {
-          for (final document in snapshot.docs) {
-            _isAdmin = document.data()['userId'] == _currentUser;
-            if (_isAdmin) {
-              break;
+        if (_currentUser != null) {
+          _loginState = LoginState.loggedIn;
+          FirebaseFirestore.instance
+              .collection('admin')
+              .snapshots()
+              .listen((snapshot) {
+            for (final document in snapshot.docs) {
+              if (document.data()['userId'] == _currentUser) {
+                _isAdmin = true;
+                break;
+              }
             }
-          }
-        });
-        initJegyzetek();
+          });
+          notifyListeners();
+          initJegyzetek();
+        }
       } else {
         _loginState = LoginState.loggedOut;
         _currentUser = null;
         _isAdmin = false;
+        _jegyzetek = [];
+        _jegyzetekSzama = 0;
+        notifyListeners();
       }
-      notifyListeners();
     });
+
+    initNovenyek();
   }
 
   void initNovenyek() {

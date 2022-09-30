@@ -11,18 +11,23 @@ import '../firebase_options.dart';
 
 class ApplicationState extends ChangeNotifier {
   LoginState _loginState = LoginState.loggedOut;
+
   LoginState get loginState => _loginState;
 
   late String? _currentUser;
-  String? get currentUser => _currentUser;
+
+  final List<String> _admins = [];
 
   bool _isAdmin = false;
+
   bool get isAdmin => _isAdmin;
 
   List<Noveny> _novenyek = [];
+
   List<Noveny> get novenyek => _novenyek;
 
   int _novenyekSzama = 0;
+
   int get novenyekSzama => _novenyekSzama;
 
   List<JegyzetAdat> _jegyzetek = [];
@@ -30,9 +35,6 @@ class ApplicationState extends ChangeNotifier {
 
   int _jegyzetekSzama = 0;
   int get jegyzetekSzama => _jegyzetekSzama;
-
-  NoteState _noteState = NoteState.show;
-  NoteState get noteState => _noteState;
 
   ApplicationState() {
     init();
@@ -43,36 +45,36 @@ class ApplicationState extends ChangeNotifier {
       options: DefaultFirebaseOptions.currentPlatform,
     );
 
+    initAdmins();
+
     FirebaseAuth.instance.userChanges().listen((user) {
       if (user != null) {
         _currentUser = user.uid;
-        if (_currentUser != null) {
-          _loginState = LoginState.loggedIn;
-          FirebaseFirestore.instance
-              .collection('admin')
-              .snapshots()
-              .listen((snapshot) {
-            for (final document in snapshot.docs) {
-              if (document.data()['userId'] == _currentUser) {
-                _isAdmin = true;
-                break;
-              }
-            }
-          });
-          notifyListeners();
-          initJegyzetek();
-        }
+        _isAdmin = _admins.contains(_currentUser);
+        _loginState = LoginState.loggedIn;
+        initJegyzetek();
       } else {
         _loginState = LoginState.loggedOut;
         _currentUser = null;
         _isAdmin = false;
         _jegyzetek = [];
         _jegyzetekSzama = 0;
-        notifyListeners();
       }
+      notifyListeners();
     });
 
     initNovenyek();
+  }
+
+  void initAdmins() {
+    FirebaseFirestore.instance
+        .collection('admin')
+        .snapshots()
+        .listen((snapshot) {
+      for (final document in snapshot.docs) {
+        _admins.add(document.data()['userId']);
+      }
+    });
   }
 
   void initNovenyek() {

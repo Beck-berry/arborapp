@@ -20,6 +20,7 @@ class Terkep extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final appState = Provider.of<ApplicationState>(context);
+    final List<Noveny> novenyek = appState.novenyek;
 
     return FutureBuilder<List<NovenyKoordinata>>(
         future: appState.loadNovenyKoordinatak(novenyId),
@@ -32,7 +33,8 @@ class Terkep extends StatelessWidget {
               if (novenyKoordSnapshot.hasError) {
                 return ErrorScreen(hiba: novenyKoordSnapshot.error);
               } else {
-                return _ShowMap(novenyek: novenyKoordSnapshot.data);
+                return _ShowMap(
+                    novenyek: novenyek, koords: novenyKoordSnapshot.data);
               }
           }
         });
@@ -40,9 +42,10 @@ class Terkep extends StatelessWidget {
 }
 
 class _ShowMap extends StatefulWidget {
-  const _ShowMap({required this.novenyek});
+  const _ShowMap({required this.novenyek, required this.koords});
 
-  final List<NovenyKoordinata>? novenyek;
+  final List<Noveny> novenyek;
+  final List<NovenyKoordinata>? koords;
 
   @override
   _ShowMapState createState() => _ShowMapState();
@@ -55,7 +58,24 @@ class _ShowMapState extends State<_ShowMap> {
   @override
   void initState() {
     novenyTipusok = List.from(NovenyTipus.values);
+    filterMarkers();
     super.initState();
+  }
+
+  void filterMarkers() {
+    List<Marker> showMarkers = [];
+
+    for (var koord in widget.koords!) {
+      Noveny noveny =
+          widget.novenyek.where((n) => n.id == koord.novenyId).single;
+      if (novenyTipusok.contains(noveny.tipus)) {
+        showMarkers.add(Marker(
+            point: LatLng(koord.coords.latitude, koord.coords.longitude),
+            builder: (context) => _MapMarker(noveny)));
+      }
+    }
+
+    markers = showMarkers;
   }
 
   Widget oldalMenu() {
@@ -82,6 +102,7 @@ class _ShowMapState extends State<_ShowMap> {
                       ujErtek!
                           ? novenyTipusok.add(tipus)
                           : novenyTipusok.remove(tipus);
+                      filterMarkers();
                     })
                   },
                 ),
@@ -130,31 +151,8 @@ class _ShowMapState extends State<_ShowMap> {
     );
   }
 
-  List<Marker> getAllMarkers(appState, Iterable<NovenyKoordinata> novenyek) {
-    List<Marker> allMarkers = [];
-
-    for (var n in novenyek) {
-      Noveny noveny = appState.getNovenyById(n.novenyId);
-
-      allMarkers.add(Marker(
-          point: LatLng(n.coords.latitude, n.coords.longitude),
-          builder: (context) => _MapMarker(noveny)));
-    }
-
-    return allMarkers;
-  }
-
   @override
   Widget build(BuildContext context) {
-    final appState = Provider.of<ApplicationState>(context);
-
-    if (widget.novenyek != null) {
-      Iterable<NovenyKoordinata> rajzoltNoveny = widget.novenyek!.where(
-          (koord) => novenyTipusok
-              .contains(appState.getNovenyById(koord.novenyId).tipus));
-      markers = getAllMarkers(appState, rajzoltNoveny);
-    }
-
     return Scaffold(
         appBar: AppBar(
           title: const Text(
@@ -167,7 +165,7 @@ class _ShowMapState extends State<_ShowMap> {
             jelmagyarazatPopup();
           },
           backgroundColor: Colors.green,
-          child: const Icon(Icons.explore),
+          child: const Icon(Icons.info),
         ),
         body: FlutterMap(
           options: MapOptions(

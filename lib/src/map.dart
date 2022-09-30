@@ -58,7 +58,43 @@ class _ShowMapState extends State<_ShowMap> {
     super.initState();
   }
 
-  void jelmagyarazatPopup(BuildContext context) {
+  Widget oldalMenu() {
+    return Drawer(
+      child: ListView(
+        children: [
+          const DrawerHeader(
+            padding: EdgeInsets.fromLTRB(10.0, 70.0, 10.0, 0.0),
+            decoration: BoxDecoration(
+              color: Colors.green,
+              shape: BoxShape.rectangle,
+            ),
+            child: Text('A térképen megjelenő növénytípusok',
+                style: TextStyle(color: Colors.white)),
+          ),
+          for (NovenyTipus tipus in NovenyTipus.values) ...[
+            Row(
+              children: [
+                Checkbox(
+                  checkColor: Colors.white,
+                  value: novenyTipusok.contains(tipus),
+                  onChanged: (bool? ujErtek) => {
+                    setState(() {
+                      ujErtek!
+                          ? novenyTipusok.add(tipus)
+                          : novenyTipusok.remove(tipus);
+                    })
+                  },
+                ),
+                Text(tipus.name)
+              ],
+            )
+          ]
+        ],
+      ),
+    );
+  }
+
+  void jelmagyarazatPopup() {
     showDialog<void>(
       context: context,
       builder: (context) {
@@ -94,6 +130,20 @@ class _ShowMapState extends State<_ShowMap> {
     );
   }
 
+  List<Marker> getAllMarkers(appState, Iterable<NovenyKoordinata> novenyek) {
+    List<Marker> allMarkers = [];
+
+    for (var n in novenyek) {
+      Noveny noveny = appState.getNovenyById(n.novenyId);
+
+      allMarkers.add(Marker(
+          point: LatLng(n.coords.latitude, n.coords.longitude),
+          builder: (context) => _MapMarker(noveny)));
+    }
+
+    return allMarkers;
+  }
+
   @override
   Widget build(BuildContext context) {
     final appState = Provider.of<ApplicationState>(context);
@@ -111,45 +161,13 @@ class _ShowMapState extends State<_ShowMap> {
             'Térkép',
           ),
         ),
-        drawer: Drawer(
-          child: ListView(
-            children: [
-              const DrawerHeader(
-                padding: EdgeInsets.fromLTRB(10.0, 70.0, 10.0, 0.0),
-                decoration: BoxDecoration(
-                  color: Colors.green,
-                  shape: BoxShape.rectangle,
-                ),
-                child: Text('A térképen megjelenő növénytípusok',
-                    style: TextStyle(color: Colors.white)),
-              ),
-              for (NovenyTipus tipus in NovenyTipus.values) ...[
-                Row(
-                  children: [
-                    Checkbox(
-                      checkColor: Colors.white,
-                      value: novenyTipusok.contains(tipus),
-                      onChanged: (bool? ujErtek) => {
-                        setState(() {
-                          ujErtek!
-                              ? novenyTipusok.add(tipus)
-                              : novenyTipusok.remove(tipus);
-                        })
-                      },
-                    ),
-                    Text(tipus.name)
-                  ],
-                )
-              ]
-            ],
-          ),
-        ),
+        drawer: oldalMenu(),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            jelmagyarazatPopup(context);
+            jelmagyarazatPopup();
           },
           backgroundColor: Colors.green,
-          child: const Icon(Icons.navigation),
+          child: const Icon(Icons.explore),
         ),
         body: FlutterMap(
           options: MapOptions(
@@ -161,11 +179,10 @@ class _ShowMapState extends State<_ShowMap> {
                   LatLng(47.4890959, 19.0470638))),
           layers: [
             TileLayerOptions(
+                opacity: 0.8,
                 minZoom: 16,
                 maxZoom: 19,
-                urlTemplate:
-                'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                subdomains: ['a', 'b', 'c'],
+                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                 tileBounds: LatLngBounds(LatLng(47.4753677, 19.0298865),
                     LatLng(47.4890959, 19.0470638))),
             MarkerLayerOptions(markers: markers),
@@ -180,24 +197,46 @@ class _ShowMapState extends State<_ShowMap> {
   }
 }
 
-List<Marker> getAllMarkers(appState, Iterable<NovenyKoordinata> novenyek) {
-  List<Marker> allMarkers = [];
-
-  for (var n in novenyek) {
-    Noveny noveny = appState.getNovenyById(n.novenyId);
-
-    allMarkers.add(Marker(
-        point: LatLng(n.coords.latitude, n.coords.longitude),
-        builder: (context) => _MapMarker(noveny)));
-  }
-
-  return allMarkers;
-}
-
 class _MapMarker extends StatelessWidget {
   const _MapMarker(this.noveny);
 
   final Noveny noveny;
+
+  void mapMarkerPopup(BuildContext context, Noveny noveny) {
+    showDialog<void>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(
+            noveny.nev,
+            style: const TextStyle(fontSize: 18),
+          ),
+          content: Text(
+            noveny.tipus.name,
+            style: const TextStyle(fontSize: 13),
+          ),
+          actions: <Widget>[
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Mégsem'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // close popup
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => Plant(noveny: noveny)));
+              },
+              child: const Text('Megnyitás'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -206,45 +245,9 @@ class _MapMarker extends StatelessWidget {
           mapMarkerPopup(context, noveny);
         },
         child: Icon(
-          Icons.circle,
+          Icons.eco,
           color: noveny.tipus.szin,
-          size: 12,
+          size: 14,
         ));
   }
-}
-
-void mapMarkerPopup(BuildContext context, Noveny noveny) {
-  showDialog<void>(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        title: Text(
-          noveny.nev,
-          style: const TextStyle(fontSize: 18),
-        ),
-        content: Text(
-          noveny.tipus.name,
-          style: const TextStyle(fontSize: 13),
-        ),
-        actions: <Widget>[
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: const Text('Mégsem'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop(); // close popup
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => Plant(noveny: noveny)));
-            },
-            child: const Text('Megnyitás'),
-          ),
-        ],
-      );
-    },
-  );
 }

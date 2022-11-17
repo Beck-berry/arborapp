@@ -1,3 +1,4 @@
+import 'package:arborapp/src/enums.dart';
 import 'package:arborapp/src/plant.dart';
 import 'package:arborapp/src/types.dart';
 import 'package:azlistview/azlistview.dart';
@@ -71,7 +72,7 @@ class SearchState extends State<Search> {
             style: const TextStyle(fontSize: 18),
           ),
           content: Text(
-            noveny.tipus.name,
+            noveny.tipus.nev,
             style: const TextStyle(fontSize: 13),
           ),
           actions: <Widget>[
@@ -145,37 +146,37 @@ class SearchState extends State<Search> {
             ),
           ),
           Expanded(
-            child: AzListView(
-            data: novenyek,
-            itemCount: novenyek.length,
-            itemBuilder: (context, index) {
-              final noveny = novenyek[index];
-              return ListTile(
-                title: Text(noveny.nev),
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => Plant(
-                              noveny: appState.getNovenyById(noveny.id))));
+              child: AzListView(
+                data: novenyek,
+                itemCount: novenyek.length,
+                itemBuilder: (context, index) {
+                  final noveny = novenyek[index];
+                  return ListTile(
+                    title: Text(noveny.nev),
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Plant(
+                                  noveny: appState.getNovenyById(noveny.id))));
+                    },
+                  );
                 },
-              );
-            },
-            indexBarMargin: const EdgeInsets.all(5.0),
-            indexBarOptions: const IndexBarOptions(
-                needRebuild: true,
-                indexHintAlignment: Alignment.centerRight,
-                indexHintDecoration: BoxDecoration(
-                    color: Colors.green,
-                    shape: BoxShape.rectangle,
-                    borderRadius: BorderRadius.all(Radius.circular(6.0))),
-                selectItemDecoration:
+                indexBarMargin: const EdgeInsets.all(5.0),
+                indexBarOptions: const IndexBarOptions(
+                    needRebuild: true,
+                    indexHintAlignment: Alignment.centerRight,
+                    indexHintDecoration: BoxDecoration(
+                        color: Colors.green,
+                        shape: BoxShape.rectangle,
+                        borderRadius: BorderRadius.all(Radius.circular(6.0))),
+                    selectItemDecoration:
                     BoxDecoration(shape: BoxShape.circle, color: Colors.green),
-                selectTextStyle: TextStyle(
-                  color: Colors.white,
-                  fontSize: 10,
-                )),
-          ))
+                    selectTextStyle: TextStyle(
+                      color: Colors.white,
+                      fontSize: 10,
+                    )),
+              ))
         ]));
   }
 }

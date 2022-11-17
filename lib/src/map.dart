@@ -106,7 +106,7 @@ class _ShowMapState extends State<_ShowMap> {
                     })
                   },
                 ),
-                Text(tipus.name)
+                Text(tipus.nev)
               ],
             )
           ]
@@ -142,7 +142,7 @@ class _ShowMapState extends State<_ShowMap> {
                         Icon(Icons.circle, color: i.szin),
                         const Padding(
                             padding: EdgeInsets.symmetric(horizontal: 5.0)),
-                        Text(i.name)
+                        Text(i.nev)
                       ],
                     )
                   ]
@@ -210,7 +210,7 @@ class _MapMarker extends StatelessWidget {
             style: const TextStyle(fontSize: 18),
           ),
           content: Text(
-            noveny.tipus.name,
+            noveny.tipus.nev,
             style: const TextStyle(fontSize: 13),
           ),
           actions: <Widget>[

@@ -210,10 +210,10 @@ class KornyezetiIgenyek extends StatelessWidget {
         _alCim('Környezeti igények'),
         Row(
           children: [
-            if (igenyek['fenyigeny'].contains('napos')) ...[
+            if (igenyek['fenyigeny'].contains(NapfenyIgeny.napos.name)) ...[
               Image.asset('assets/images/napos.png', height: 35)
             ],
-            if (igenyek['fenyigeny'].contains('felarnyekos')) ...[
+            if (igenyek['fenyigeny'].contains(NapfenyIgeny.fel.name)) ...[
               Image.asset('assets/images/felarnyekos.png', height: 35)
             ],
           ],

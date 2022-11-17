@@ -261,7 +261,7 @@ class _AddPlantFormState extends State<_AddPlantForm> {
                               value: tipus,
                               items: NovenyTipus.values
                                   .map((e) => DropdownMenuItem(
-                                      value: e, child: Text(e.name)))
+                                      value: e, child: Text(e.nev)))
                                   .toList(),
                               onChanged: (value) => {
                                 setState(() {
@@ -355,7 +355,7 @@ class _AddPlantFormState extends State<_AddPlantForm> {
                             kisCim('Alkalmazási lehetőségek'),
                             for (MapEntry<AlkalmazasLehetoseg, bool> a
                                 in alkalmazas.entries) ...[
-                              _checkboxMezo(a, alkalmazas, a.key.name)
+                              _checkboxMezo(a, alkalmazas, a.key.nev)
                             ],
                           ],
                         )),
@@ -370,7 +370,7 @@ class _AddPlantFormState extends State<_AddPlantForm> {
                                   const TableCell(child: Text('')),
                                   for (Diszitoertek e
                                       in Diszitoertek.values) ...[
-                                    TableCell(child: Text(e.name))
+                                    TableCell(child: Text(e.nev))
                                   ],
                                 ]),
                                 TableRow(children: [
@@ -420,7 +420,7 @@ class _AddPlantFormState extends State<_AddPlantForm> {
                             kisCim('Napfényigény'),
                             for (MapEntry<NapfenyIgeny, bool> a
                                 in napfenyIgeny.entries) ...[
-                              _checkboxMezo(a, napfenyIgeny, a.key.name)
+                              _checkboxMezo(a, napfenyIgeny, a.key.nev)
                             ],
                           ],
                         )),
@@ -431,7 +431,7 @@ class _AddPlantFormState extends State<_AddPlantForm> {
                             kisCim('Talajigény'),
                             for (MapEntry<TalajIgeny, bool> a
                                 in talajIgeny.entries) ...[
-                              _checkboxMezo(a, talajIgeny, a.key.name)
+                              _checkboxMezo(a, talajIgeny, a.key.nev)
                             ],
                           ],
                         )),
@@ -467,35 +467,35 @@ class _AddPlantFormState extends State<_AddPlantForm> {
     List<String> alkalmazasok = [];
     alkalmazas.forEach((key, value) {
       if (value) {
-        alkalmazasok.add(key.toString());
+        alkalmazasok.add(key.name);
       }
     });
 
     List<String> tavasz = [];
     diszitoTavasz.forEach((key, value) {
       if (value) {
-        tavasz.add(key.toString());
+        tavasz.add(key.name);
       }
     });
 
     List<String> nyar = [];
     diszitoNyar.forEach((key, value) {
       if (value) {
-        nyar.add(key.toString());
+        nyar.add(key.name);
       }
     });
 
     List<String> osz = [];
     diszitoOsz.forEach((key, value) {
       if (value) {
-        osz.add(key.toString());
+        osz.add(key.name);
       }
     });
 
     List<String> tel = [];
     diszitoTel.forEach((key, value) {
       if (value) {
-        tel.add(key.toString());
+        tel.add(key.name);
       }
     });
 
@@ -509,14 +509,14 @@ class _AddPlantFormState extends State<_AddPlantForm> {
     List<String> napfenyIgenyList = [];
     napfenyIgeny.forEach((key, value) {
       if (value) {
-        napfenyIgenyList.add(key.toString());
+        napfenyIgenyList.add(key.name);
       }
     });
 
     List<String> talajList = [];
     talajIgeny.forEach((key, value) {
       if (value) {
-        talajList.add(key.toString());
+        talajList.add(key.name);
       }
     });
 

@@ -77,11 +77,11 @@ class MyHomePageState extends State<MyHomePage> {
                   margin: const EdgeInsets.only(
                       left: 10.0, right: 10.0, bottom: 20.0),
                   child: const Text(
-                    'Az ARBOR APP egy digitális térképen alapuló rendszer, melynek segítségével megismerhetjük a Budai Arborétum növényállományát. Műholdképen keresztül felülnézetből láthatjuk a kert jelenlegi szerkezetét, melynek legfontosabb elemei a fásszárú taxonok. A térkép jelöli az adott növény helyzetét és tudományos nevét. Az adott növényre kattintva megismerhetjük a taxon jellemzőit. Az általános információátadás mellett, az applikáció célja, hogy a Budai Campus hallgatói már szakmai kérdésekre is választ kapjanak, mint például a taxon ökológiai igényei, szaporítása, alkalmazási lehetőségeit és részletes fenológiai fázisait. Ezen információk jelentősen megkönnyítik, hogy kertészeti és tájépítészeti szempontból is megismerjük a növényeket.',
+                    'Az ARBOR APP egy digitális térképen alapuló rendszer, melynek segítségével megismerhetjük a Budai Arborétum növényállományát. Műholdképen keresztül felülnézetből láthatjuk a kert jelenlegi szerkezetét, melynek legfontosabb elemei a fásszárú taxonok. A térkép jelöli az adott növény helyzetét és tudományos nevét. Az adott növényre kattintva megismerhetjük a taxon jellemzőit. Az általános információátadás mellett az applikáció célja, hogy a Budai Campus hallgatói már szakmai kérdésekre is választ kapjanak, mint például a taxon ökológiai igényei, szaporítása, alkalmazási lehetőségei és részletes fenológiai fázisai. Ezen információk jelentősen megkönnyítik, hogy kertészeti és tájépítészeti szempontból is megismerjük a növényeket.',
                     textAlign: TextAlign.justify,
                   )),
               FoMenuButton(
-                cimke: 'A Budai Arborétumról...',
+                cimke: 'A Budai Arborétumról',
                 ikon: Icons.article,
                 onPress: Consumer<ApplicationState>(
                   builder: (context, appState, _) => const Info(),

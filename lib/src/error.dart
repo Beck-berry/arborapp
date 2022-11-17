@@ -23,7 +23,7 @@ class ErrorScreen extends StatelessWidget {
                 Container(
                   margin: const EdgeInsets.all(20.0),
                   child: const Icon(
-                    Icons.emoji_objects_outlined,
+                    Icons.bug_report,
                     size: 100,
                     semanticLabel: 'Error',
                     color: Colors.redAccent,

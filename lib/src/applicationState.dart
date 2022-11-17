@@ -45,7 +45,7 @@ class ApplicationState extends ChangeNotifier {
       options: DefaultFirebaseOptions.currentPlatform,
     );
 
-    initAdmins();
+    await initAdmins();
 
     FirebaseAuth.instance.userChanges().listen((user) {
       if (user != null) {
@@ -66,7 +66,7 @@ class ApplicationState extends ChangeNotifier {
     initNovenyek();
   }
 
-  void initAdmins() {
+  Future<void> initAdmins() async {
     FirebaseFirestore.instance
         .collection('admin')
         .snapshots()

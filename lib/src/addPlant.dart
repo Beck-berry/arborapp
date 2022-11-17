@@ -72,28 +72,24 @@ class _AddPlantFormState extends State<_AddPlantForm> {
     Diszitoertek.lomb: false,
     Diszitoertek.virag: false,
     Diszitoertek.termes: false,
-    Diszitoertek.level: false,
     Diszitoertek.kereg: false
   };
   Map<Diszitoertek, bool> diszitoNyar = <Diszitoertek, bool>{
     Diszitoertek.lomb: false,
     Diszitoertek.virag: false,
     Diszitoertek.termes: false,
-    Diszitoertek.level: false,
     Diszitoertek.kereg: false
   };
   Map<Diszitoertek, bool> diszitoOsz = <Diszitoertek, bool>{
     Diszitoertek.lomb: false,
     Diszitoertek.virag: false,
     Diszitoertek.termes: false,
-    Diszitoertek.level: false,
     Diszitoertek.kereg: false
   };
   Map<Diszitoertek, bool> diszitoTel = <Diszitoertek, bool>{
     Diszitoertek.lomb: false,
     Diszitoertek.virag: false,
     Diszitoertek.termes: false,
-    Diszitoertek.level: false,
     Diszitoertek.kereg: false
   };
   Map<NapfenyIgeny, bool> napfenyIgeny = <NapfenyIgeny, bool>{
@@ -147,25 +143,20 @@ class _AddPlantFormState extends State<_AddPlantForm> {
     diszitoTavasz[Diszitoertek.kereg] =
         diszitoertek['tavasz'].contains('kereg');
     diszitoTavasz[Diszitoertek.lomb] = diszitoertek['tavasz'].contains('lomb');
-    diszitoTavasz[Diszitoertek.level] =
-        diszitoertek['tavasz'].contains('level');
     diszitoTavasz[Diszitoertek.virag] =
         diszitoertek['tavasz'].contains('virag');
     diszitoTavasz[Diszitoertek.termes] =
         diszitoertek['tavasz'].contains('termes');
     diszitoNyar[Diszitoertek.kereg] = diszitoertek['nyar'].contains('kereg');
     diszitoNyar[Diszitoertek.lomb] = diszitoertek['nyar'].contains('lomb');
-    diszitoNyar[Diszitoertek.level] = diszitoertek['nyar'].contains('level');
     diszitoNyar[Diszitoertek.virag] = diszitoertek['nyar'].contains('virag');
     diszitoNyar[Diszitoertek.termes] = diszitoertek['nyar'].contains('termes');
     diszitoOsz[Diszitoertek.kereg] = diszitoertek['osz'].contains('kereg');
     diszitoOsz[Diszitoertek.lomb] = diszitoertek['osz'].contains('lomb');
-    diszitoOsz[Diszitoertek.level] = diszitoertek['osz'].contains('level');
     diszitoOsz[Diszitoertek.virag] = diszitoertek['osz'].contains('virag');
     diszitoOsz[Diszitoertek.termes] = diszitoertek['osz'].contains('termes');
     diszitoTel[Diszitoertek.kereg] = diszitoertek['tel'].contains('kereg');
     diszitoTel[Diszitoertek.lomb] = diszitoertek['tel'].contains('lomb');
-    diszitoTel[Diszitoertek.level] = diszitoertek['tel'].contains('level');
     diszitoTel[Diszitoertek.virag] = diszitoertek['tel'].contains('virag');
     diszitoTel[Diszitoertek.termes] = diszitoertek['tel'].contains('termes');
 

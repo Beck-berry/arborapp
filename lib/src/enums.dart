@@ -5,6 +5,7 @@ enum LoginState {
   login,
   register,
   loggedIn,
+  changePassword,
 }
 
 enum NoteState { show, write, modify }
@@ -24,7 +25,7 @@ extension AlkalmazasLehetosegExt on AlkalmazasLehetoseg {
   }
 }
 
-enum Diszitoertek { lomb, virag, termes, level, kereg }
+enum Diszitoertek { lomb, virag, termes, kereg }
 
 extension DiszitoertekExt on Diszitoertek {
   String get nev {
@@ -35,8 +36,6 @@ extension DiszitoertekExt on Diszitoertek {
         return 'lomb';
       case Diszitoertek.virag:
         return 'virág';
-      case Diszitoertek.level:
-        return 'levél';
       case Diszitoertek.kereg:
         return 'kéreg';
     }

@@ -175,21 +175,21 @@ class _ShowMapState extends State<_ShowMap> {
               maxZoom: 19,
               maxBounds: LatLngBounds(LatLng(47.4753677, 19.0298865),
                   LatLng(47.4890959, 19.0470638))),
-          layers: [
-            TileLayerOptions(
+          nonRotatedChildren: [
+            AttributionWidget.defaultWidget(
+              source: 'OpenStreetMap contributors',
+              onSourceTapped: null,
+            ),
+          ],
+          children: [
+            TileLayer(
                 opacity: 0.8,
                 minZoom: 16,
                 maxZoom: 19,
                 urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                 tileBounds: LatLngBounds(LatLng(47.4753677, 19.0298865),
                     LatLng(47.4890959, 19.0470638))),
-            MarkerLayerOptions(markers: markers),
-          ],
-          nonRotatedChildren: [
-            AttributionWidget.defaultWidget(
-              source: 'OpenStreetMap contributors',
-              onSourceTapped: null,
-            ),
+            MarkerLayer(markers: markers),
           ],
         ));
   }

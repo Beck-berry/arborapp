@@ -27,17 +27,19 @@ class Notes extends StatelessWidget {
           Container(
             margin: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
                 child: SearchField(
-                  suggestions: jegyzetek.map((j) => SearchFieldListItem(
+              suggestions: jegyzetek
+                  .map((j) => SearchFieldListItem(
                       novenyek.where((n) => n.id == j.noveny).first.nev,
-                      child: Text(novenyek.where((n) => n.id == j.noveny).first.nev))
-                  ).toList(),
-                  searchStyle: TextStyle(
-                    fontSize: 18,
-                    color: Colors.black.withOpacity(0.8),
-                  ),
-                  hint: 'Jegyzet keresése',
-                  hasOverlay: false,
-                  onSubmit: (value) {
+                      child: Text(
+                          novenyek.where((n) => n.id == j.noveny).first.nev)))
+                  .toList(),
+              searchStyle: TextStyle(
+                fontSize: 18,
+                color: Colors.black.withOpacity(0.8),
+              ),
+              hint: 'Jegyzet keresése',
+              hasOverlay: true,
+              onSubmit: (value) {
                 Noveny kivalasztottNoveny =
                     novenyek.where((noveny) => noveny.nev == value).first;
                 Navigator.push(

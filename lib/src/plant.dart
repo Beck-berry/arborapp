@@ -205,6 +205,11 @@ class KornyezetiIgenyek extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<String> talajIgenyek = [];
+    igenyek['talaj'].forEach((igeny) {
+      talajIgenyek.add(convertNameToTalajIgeny(igeny)!.nev);
+    });
+
     return Column(
       children: [
         _alCim('Környezeti igények'),
@@ -216,13 +221,13 @@ class KornyezetiIgenyek extends StatelessWidget {
             if (igenyek['fenyigeny'].contains(NapfenyIgeny.fel.name)) ...[
               Image.asset('assets/images/felarnyekos.png', height: 35)
             ],
+            if (igenyek['fenyigeny'].contains(NapfenyIgeny.arnyek.name)) ...[
+              Image.asset('assets/images/arnyek.png', height: 35)
+            ],
           ],
         ),
         Row(
-          children: [
-            Text("pH: ${igenyek['talaj']}",
-                style: const TextStyle(fontSize: 10))
-          ],
+          children: [Text('pH: ${talajIgenyek.join(', ')}')],
         )
       ],
     );
@@ -319,10 +324,7 @@ class Alkalmazas extends StatelessWidget {
       children: [
         _alCim('Alkalmazási lehetőségek'),
         Row(
-          children: [
-            const Text('|| '),
-            for (String a in alkalmazas) ...[Text('$a || ')]
-          ],
+          children: [Text(alkalmazas.join(' || '))],
         )
       ],
     );

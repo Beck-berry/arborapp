@@ -130,7 +130,7 @@ class SearchState extends State<Search> {
                 color: Colors.black.withOpacity(0.8),
               ),
               hint: 'Növény keresése',
-              hasOverlay: false,
+              hasOverlay: true,
               onSuggestionTap: (value) {
                 Noveny kivalasztottNoveny = novenyek
                     .where((noveny) => noveny.nev == value.searchKey)

@@ -72,6 +72,19 @@ extension TalajIgenyExt on TalajIgeny {
   }
 }
 
+TalajIgeny? convertNameToTalajIgeny(String enumName) {
+  switch (enumName) {
+    case 'semleges':
+      return TalajIgeny.semleges;
+    case 'savanyu':
+      return TalajIgeny.savanyu;
+    case 'meszes':
+      return TalajIgeny.meszes;
+    default:
+      return null;
+  }
+}
+
 enum NovenyTipus { fenyo, lombosFa, cserje }
 
 extension NovenyTipusExt on NovenyTipus {

@@ -199,13 +199,26 @@ class ApplicationState extends ChangeNotifier {
   Future<void> deleteAcc(
       void Function(FirebaseAuthException e) errorCallback) async {
     try {
-      FirebaseAuth.instance.currentUser?.delete();
+      // jegyzetek törlése
       for (var j in _jegyzetek) {
         FirebaseFirestore.instance
             .collection('jegyzetek')
             .doc(j.id.id)
             .delete();
       }
+      // admin törlése
+      await FirebaseFirestore.instance
+          .collection('admin')
+          .where('userId', isEqualTo: _currentUser)
+          .limit(1)
+          .get()
+          .then((querySnapshot) {
+        for (var doc in querySnapshot.docs) {
+          doc.reference.delete();
+        }
+      });
+      // user törlése
+      FirebaseAuth.instance.currentUser?.delete();
       _loginState = LoginState.loggedOut;
       _currentUser = null;
       notifyListeners();

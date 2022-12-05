@@ -52,30 +52,26 @@ class _ShowMap extends StatefulWidget {
 }
 
 class _ShowMapState extends State<_ShowMap> {
-  late List<Marker> markers;
   late List<NovenyTipus> novenyTipusok;
 
   @override
   void initState() {
     novenyTipusok = List.from(NovenyTipus.values);
-    filterMarkers();
     super.initState();
   }
 
-  void filterMarkers() {
-    List<Marker> showMarkers = [];
-
+  filterMarkers() {
+    List<Marker> markers = [];
     for (var koord in widget.koords!) {
       Noveny noveny =
           widget.novenyek.where((n) => n.id == koord.novenyId).single;
       if (novenyTipusok.contains(noveny.tipus)) {
-        showMarkers.add(Marker(
+        markers.add(Marker(
             point: LatLng(koord.coords.latitude, koord.coords.longitude),
             builder: (context) => _MapMarker(noveny)));
       }
     }
-
-    markers = showMarkers;
+    return markers;
   }
 
   Widget oldalMenu() {
@@ -102,7 +98,6 @@ class _ShowMapState extends State<_ShowMap> {
                       ujErtek!
                           ? novenyTipusok.add(tipus)
                           : novenyTipusok.remove(tipus);
-                      filterMarkers();
                     })
                   },
                 ),
@@ -177,7 +172,7 @@ class _ShowMapState extends State<_ShowMap> {
                   LatLng(47.4890959, 19.0470638))),
           nonRotatedChildren: [
             AttributionWidget.defaultWidget(
-              source: 'OpenStreetMap contributors',
+              source: 'OpenStreetMap',
               onSourceTapped: null,
             ),
           ],
@@ -189,7 +184,7 @@ class _ShowMapState extends State<_ShowMap> {
                 urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                 tileBounds: LatLngBounds(LatLng(47.4753677, 19.0298865),
                     LatLng(47.4890959, 19.0470638))),
-            MarkerLayer(markers: markers),
+            MarkerLayer(markers: filterMarkers()),
           ],
         ));
   }

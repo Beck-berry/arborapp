@@ -468,7 +468,7 @@ class Profile extends StatelessWidget {
           ),
         );
       default:
-        return base(const Text('Valami elromlott :('));
+        return base(const Text('Valami elromlott'));
     }
   }
 }

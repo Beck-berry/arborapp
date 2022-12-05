@@ -34,7 +34,13 @@ class ErrorScreen extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 18,
                   ),
-                )
+                ),
+                if (kDebugMode && hiba != null) ...[
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Text(hiba.toString()),
+                  )
+                ],
               ],
             )));
   }
